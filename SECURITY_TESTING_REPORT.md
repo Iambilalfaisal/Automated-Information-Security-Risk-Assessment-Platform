@@ -2,7 +2,7 @@
 
 **Project:** Automated Information Security Risk Assessment Platform  
 **Date:** 2026-05-31  
-**Environment:** Flask test client, SQLite, pytest
+**Environment:** Flask test client, SQLite, pytest (`backend/tests/test_security.py`)
 
 ## Summary
 

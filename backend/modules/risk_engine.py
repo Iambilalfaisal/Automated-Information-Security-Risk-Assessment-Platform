@@ -90,14 +90,18 @@ def calculate_risk_impact_rating(
     """
     AssessITS Risk Impact Rating = Asset_Value × Threat_Value × Likelihood.
 
-    Asset value should be normalised 1–5 scale for rating band 1–250.
+    The AssessITS scale uses Asset_Value (1-5), Threat_Value (2-10), and
+    Likelihood (1-5), giving a band of 1-250. Here likelihood is supplied as a
+    probability (0-1) and mapped to the 0-5 likelihood scale via probability*5,
+    so the rating stays within the documented 1-250 band.
     Rahman et al. (2024). AssessITS. arXiv:2410.01750
     """
     if asset_value < 1 or asset_value > 5:
         raise ValueError("asset_value scale must be 1–5 for impact rating")
     if not 0 <= likelihood <= 1:
         raise ValueError("likelihood must be between 0 and 1")
-    return asset_value * threat_value * likelihood * 50  # scale to 1–250 range
+    likelihood_scale = likelihood * 5  # map probability (0-1) to 0-5 scale
+    return asset_value * threat_value * likelihood_scale
 
 
 def normalise_asset_value(value_usd: float, max_value: float = 1_000_000) -> float:

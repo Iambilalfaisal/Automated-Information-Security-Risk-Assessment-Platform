@@ -59,6 +59,18 @@ class TestAssessITS:
         assert normalise_asset_value(0) == 1.0
         assert normalise_asset_value(1_000_000) == 5.0
 
+    def test_impact_rating_max_within_band(self):
+        # Max scale: asset=5, threat_value=10, likelihood=1.0 -> 5*10*(1*5) = 250
+        rating = calculate_risk_impact_rating(5.0, 10, 1.0)
+        assert rating == 250
+        assert get_criticality(rating) == "Critical"
+
+    def test_impact_rating_midpoint(self):
+        # asset=3, threat_value=6, likelihood=0.5 -> 3*6*2.5 = 45
+        rating = calculate_risk_impact_rating(3.0, 6, 0.5)
+        assert rating == 45
+        assert get_criticality(rating) == "Low"
+
 
 class TestCBA:
     def test_cba_positive_recommended(self):

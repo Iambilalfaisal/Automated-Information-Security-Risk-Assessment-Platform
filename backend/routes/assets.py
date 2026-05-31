@@ -6,7 +6,13 @@ from flask import Blueprint, request
 
 from database import models
 from modules.cve_fetcher import fetch_cves_for_asset
-from utils import api_response, escape_output, get_session_id, rate_limit
+from utils import (
+    api_response,
+    escape_output,
+    get_session_id,
+    rate_limit,
+    validate_str_field,
+)
 
 assets_bp = Blueprint("assets", __name__, url_prefix="/api/assets")
 
@@ -22,13 +28,16 @@ def create_asset():
         for field in required:
             if field not in body:
                 return api_response(False, None, f"Missing required field: {field}", 400)
+        value_usd = float(body["value_usd"])
+        if value_usd < 0:
+            return api_response(False, None, "value_usd must be non-negative", 400)
         asset = models.create_asset(
             session_id=session_id,
-            name=str(body["name"]),
-            asset_type=str(body["asset_type"]),
-            value_usd=float(body["value_usd"]),
-            description=body.get("description", ""),
-            software=body.get("software", ""),
+            name=validate_str_field(body["name"], "name", 150),
+            asset_type=validate_str_field(body["asset_type"], "asset_type", 50),
+            value_usd=value_usd,
+            description=validate_str_field(body.get("description"), "description", 1000, required=False),
+            software=validate_str_field(body.get("software"), "software", 255, required=False),
         )
         return api_response(True, escape_output(asset), None, 201)
     except (ValueError, TypeError) as e:

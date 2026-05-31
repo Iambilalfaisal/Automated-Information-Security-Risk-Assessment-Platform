@@ -5,7 +5,13 @@ threats.py — Threat CRUD API endpoints linked to assets.
 from flask import Blueprint, request
 
 from database import models
-from utils import api_response, escape_output, get_session_id, rate_limit
+from utils import (
+    api_response,
+    escape_output,
+    get_session_id,
+    rate_limit,
+    validate_str_field,
+)
 
 threats_bp = Blueprint("threats", __name__, url_prefix="/api/threats")
 
@@ -43,13 +49,13 @@ def create_threat():
             return api_response(False, None, "Asset not found", 404)
         threat = models.create_threat(
             asset_id=int(body["asset_id"]),
-            name=str(body["name"]),
+            name=validate_str_field(body["name"], "name", 150),
             probability=float(body["probability"]),
             vulnerability_score=int(body["vulnerability_score"]),
             mitigation_effectiveness=float(body["mitigation_effectiveness"]),
             aro=float(body["aro"]),
             exposure_factor=float(body["exposure_factor"]),
-            category=body.get("category", ""),
+            category=validate_str_field(body.get("category"), "category", 80, required=False),
             uncertainty=float(body.get("uncertainty", 0.1)),
             threat_level=int(body.get("threat_level", 3)),
         )

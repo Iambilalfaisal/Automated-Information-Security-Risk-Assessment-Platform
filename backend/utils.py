@@ -50,6 +50,30 @@ def get_session_id() -> str:
     return sid
 
 
+def validate_str_field(value: Any, field_name: str, max_len: int = 255, required: bool = True) -> str:
+    """
+    Validate and normalise a string input field.
+
+    Args:
+        value: Raw value from request body.
+        field_name: Name used in error messages.
+        max_len: Maximum allowed character length.
+        required: Whether an empty value is rejected.
+
+    Returns:
+        The validated string.
+
+    Raises:
+        ValueError: If required-but-empty or exceeds max_len.
+    """
+    text = "" if value is None else str(value).strip()
+    if required and not text:
+        raise ValueError(f"{field_name} is required")
+    if len(text) > max_len:
+        raise ValueError(f"{field_name} exceeds maximum length of {max_len} characters")
+    return text
+
+
 def escape_output(value: Any) -> Any:
     """
     Recursively escape string values for XSS-safe API output.

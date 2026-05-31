@@ -1,0 +1,92 @@
+{
+  "windows": [
+    {
+      "cve_id": "CVE-2024-30088",
+      "description": "Windows Kernel Elevation of Privilege Vulnerability",
+      "cvss_score": 8.8,
+      "severity": "High",
+      "published": "2024-06-11",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-30088"
+    },
+    {
+      "cve_id": "CVE-2024-38063",
+      "description": "Windows TCP/IP Remote Code Execution Vulnerability",
+      "cvss_score": 9.8,
+      "severity": "Critical",
+      "published": "2024-08-13",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-38063"
+    }
+  ],
+  "linux": [
+    {
+      "cve_id": "CVE-2024-1086",
+      "description": "netfilter: use after free in nf_tables",
+      "cvss_score": 7.8,
+      "severity": "High",
+      "published": "2024-01-31",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-1086"
+    }
+  ],
+  "apache": [
+    {
+      "cve_id": "CVE-2024-38474",
+      "description": "Apache HTTP Server vulnerability",
+      "cvss_score": 7.5,
+      "severity": "High",
+      "published": "2024-07-01",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-38474"
+    }
+  ],
+  "mysql": [
+    {
+      "cve_id": "CVE-2024-20963",
+      "description": "MySQL Server vulnerability",
+      "cvss_score": 6.5,
+      "severity": "Medium",
+      "published": "2024-04-16",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-20963"
+    }
+  ],
+  "default": [
+    {
+      "cve_id": "CVE-2023-44487",
+      "description": "HTTP/2 Rapid Reset Attack",
+      "cvss_score": 7.5,
+      "severity": "High",
+      "published": "2023-10-10",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2023-44487"
+    },
+    {
+      "cve_id": "CVE-2023-4966",
+      "description": "Citrix Bleed - sensitive information disclosure",
+      "cvss_score": 9.4,
+      "severity": "Critical",
+      "published": "2023-10-25",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2023-4966"
+    },
+    {
+      "cve_id": "CVE-2024-21413",
+      "description": "Microsoft Outlook Remote Code Execution",
+      "cvss_score": 9.8,
+      "severity": "Critical",
+      "published": "2024-02-13",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-21413"
+    },
+    {
+      "cve_id": "CVE-2024-21762",
+      "description": "FortiOS out-of-bounds write vulnerability",
+      "cvss_score": 9.6,
+      "severity": "Critical",
+      "published": "2024-02-08",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-21762"
+    },
+    {
+      "cve_id": "CVE-2023-7028",
+      "description": "GitLab account takeover via password reset",
+      "cvss_score": 10.0,
+      "severity": "Critical",
+      "published": "2024-01-11",
+      "link": "https://nvd.nist.gov/vuln/detail/CVE-2023-7028"
+    }
+  ]
+}

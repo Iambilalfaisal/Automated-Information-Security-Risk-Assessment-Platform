@@ -79,9 +79,29 @@ Pass session via header `X-Session-Id` or query `session_id`.
 - **R** = (P × V) − M + U  
 - **AssessITS** — Rahman et al. (2024). arXiv:2410.01750
 
+## Project Structure
+
+```
+risk-assessment-platform/
+├── backend/          # Flask API, risk engine, PDF, CVE, LLM
+├── frontend/         # React + Tailwind + Recharts
+├── SECURITY_TESTING_REPORT.md
+└── .env.example
+```
+
 ## Screenshots
 
-_Add screenshots of Home, Assessment, Results, and Compliance pages here after running the UI._
+| Page | Description |
+|------|-------------|
+| Home | Overview and start assessment CTA |
+| Assessment | Asset form, threat matrix, run assessment |
+| Results | Dashboard, compliance, PDF downloads |
+
+_Add screenshots after running the UI locally._
+
+## Git Commits
+
+This project uses feature-based commits per implementation task (15+ commits for instructor review).
 
 ## License
 

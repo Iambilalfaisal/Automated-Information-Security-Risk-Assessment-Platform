@@ -72,6 +72,39 @@ Pass session via header `X-Session-Id` or query `session_id`.
 | GET | `/api/reports/compliance` | Compliance PDF |
 | GET | `/api/health` | Health check |
 
+## Demo Data
+
+Load a realistic sample inventory (5 assets, 8 threats) in one click via the
+**Load Demo Data** button on the Assessment page, or from the CLI:
+
+```powershell
+cd backend
+.\venv\Scripts\python seed_data.py demo-session
+```
+
+## Deliverables
+
+| Deliverable | Location |
+|-------------|----------|
+| Technical Report (IEEE format, .docx) | [docs/Technical_Report.docx](docs/Technical_Report.docx) |
+| Report generator (regenerates the .docx) | [docs/generate_report.py](docs/generate_report.py) |
+| Report figures | [docs/figures/](docs/figures/) |
+| Security Testing Report | [SECURITY_TESTING_REPORT.md](SECURITY_TESTING_REPORT.md) |
+| Video Demo Script | [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) |
+| Viva Presentation Outline | [docs/PRESENTATION_OUTLINE.md](docs/PRESENTATION_OUTLINE.md) |
+
+Regenerate the technical report (re-seeds demo data, rebuilds figures, writes the .docx):
+
+```powershell
+cd backend
+.\venv\Scripts\activate
+cd ..\docs
+python generate_report.py
+```
+
+Open `docs/Technical_Report.docx` in Microsoft Word and choose **Update Field**
+(Ctrl+A then F9) to populate the Table of Contents and page numbers.
+
 ## Risk Formulas
 
 - **SLE** = Asset Value × Exposure Factor  

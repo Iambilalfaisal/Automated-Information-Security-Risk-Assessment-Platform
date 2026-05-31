@@ -45,12 +45,14 @@ def create_app() -> Flask:
     from routes.assessment import assessment_bp
     from routes.reports import reports_bp
     from routes.compliance import compliance_bp
+    from routes.demo import demo_bp
 
     app.register_blueprint(assets_bp)
     app.register_blueprint(threats_bp)
     app.register_blueprint(assessment_bp)
     app.register_blueprint(reports_bp)
     app.register_blueprint(compliance_bp)
+    app.register_blueprint(demo_bp)
 
     @app.route("/api/health", methods=["GET"])
     def health():

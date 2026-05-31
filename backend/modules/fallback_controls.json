@@ -1,0 +1,52 @@
+{
+  "Critical": [
+    {
+      "control_id": "AC-2",
+      "control_name": "Account Management",
+      "plain_english_explanation": "Ensure only authorised people have system accounts and remove access when staff leave.",
+      "implementation_priority": 1,
+      "estimated_cost_range": "$5,000 - $25,000"
+    },
+    {
+      "control_id": "SC-8",
+      "control_name": "Transmission Confidentiality and Integrity",
+      "plain_english_explanation": "Encrypt sensitive data when it travels across networks.",
+      "implementation_priority": 1,
+      "estimated_cost_range": "$10,000 - $50,000"
+    }
+  ],
+  "High": [
+    {
+      "control_id": "SI-2",
+      "control_name": "Flaw Remediation",
+      "plain_english_explanation": "Patch software vulnerabilities within agreed timeframes.",
+      "implementation_priority": 1,
+      "estimated_cost_range": "$3,000 - $15,000"
+    },
+    {
+      "control_id": "RA-5",
+      "control_name": "Vulnerability Monitoring and Scanning",
+      "plain_english_explanation": "Regularly scan systems for known security weaknesses.",
+      "implementation_priority": 2,
+      "estimated_cost_range": "$8,000 - $30,000"
+    }
+  ],
+  "Medium": [
+    {
+      "control_id": "AU-2",
+      "control_name": "Audit Events",
+      "plain_english_explanation": "Log important security events so you can investigate incidents.",
+      "implementation_priority": 2,
+      "estimated_cost_range": "$2,000 - $10,000"
+    }
+  ],
+  "Low": [
+    {
+      "control_id": "AT-2",
+      "control_name": "Literacy Training and Awareness",
+      "plain_english_explanation": "Train staff to recognise phishing and follow security policies.",
+      "implementation_priority": 3,
+      "estimated_cost_range": "$1,000 - $5,000"
+    }
+  ]
+}

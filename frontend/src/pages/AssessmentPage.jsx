@@ -34,6 +34,17 @@ export default function AssessmentPage() {
     }
   };
 
+  const handleSeed = async () => {
+    setMessage('');
+    try {
+      const res = await api.seedDemo();
+      await refreshAssets();
+      setMessage(`Loaded demo data: ${res.assets} assets and ${res.threats} threats.`);
+    } catch (e) {
+      setMessage(e.message);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap gap-4 items-end">
@@ -53,9 +64,22 @@ export default function AssessmentPage() {
         >
           {running ? 'Running…' : 'Run Assessment'}
         </button>
+        <button
+          type="button"
+          onClick={handleSeed}
+          className="bg-slate-200 text-slate-800 px-4 py-2 rounded-lg hover:bg-slate-300"
+        >
+          Load Demo Data
+        </button>
       </div>
       {message && (
-        <p className={`text-sm ${message.includes('success') ? 'text-green-700' : 'text-red-600'}`}>
+        <p
+          className={`text-sm ${
+            message.includes('success') || message.includes('Loaded')
+              ? 'text-green-700'
+              : 'text-red-600'
+          }`}
+        >
           {message}
         </p>
       )}

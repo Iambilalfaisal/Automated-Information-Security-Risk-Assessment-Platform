@@ -42,6 +42,7 @@ export const api = {
     }),
   getResults: () => request('/api/assessment/results'),
   getNotifications: () => request('/api/assessment/notifications'),
+  seedDemo: () => request('/api/demo/seed', { method: 'POST' }),
   getCompliance: () => request('/api/compliance'),
   updateCompliance: (body) =>
     request('/api/compliance', { method: 'POST', body: JSON.stringify(body) }),

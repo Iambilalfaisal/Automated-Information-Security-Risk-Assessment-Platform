@@ -17,7 +17,6 @@ export default function ResultsPage() {
       .getResults()
       .then(setResults)
       .catch((e) => setError(e.message));
-    api.getNotifications().catch(() => {});
     api
       .getNotifications()
       .then(setNotifications)

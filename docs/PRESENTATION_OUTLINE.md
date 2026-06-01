@@ -1,48 +1,40 @@
 # Viva Presentation Outline (Phase 7)
 
-10-minute presentation + 5-minute Q&A. Suggested 10-11 slides, ~1 minute each.
+10-minute presentation + 5-minute Q&A. UI: **Streamlit** (local or Cloud URL).
 
 ## Slide 1 — Title
-- Project title, team members and roll numbers, course code, supervisor, date.
-- University logo.
+- Project title, team, course, supervisor, date.
 
-## Slide 2 — Problem and Motivation
-- SMEs lack accessible, objective quantitative risk tools.
-- Manual NIST/ISO assessments are slow and inconsistent.
+## Slide 2 — Problem
+- SMEs need accessible quantitative risk tools.
 
 ## Slide 3 — Objectives
-- The six numbered objectives from the report (formulas, secure API, reports, CVE/LLM, dashboard, security testing).
+- Six objectives (formulas, API/DB, reports, CVE/LLM, dashboard, security tests).
 
-## Slide 4 — Related Work and Gap
-- One-line each: NIST SP 800-30, AssessITS, ISO 27005, FAIR, OCTAVE, CVSS, ATT&CK, LLM advisory.
-- Gap: no single open tool combining quantitative formulas + CVE + LLM + reporting.
+## Slide 4 — Architecture
+- Streamlit UI → backend modules (risk engine, SQLite, PDF, CVE, LLM).
+- Optional Flask API for REST clients.
 
-## Slide 5 — System Architecture
-- Three-tier diagram (React -> Flask -> SQLite, plus risk engine, CVE, LLM, reports).
-- Mention the {success, data, error} API envelope.
+## Slide 5 — Algorithms
+- SLE, ALE, R = P×V−M+U, AssessITS 1–250 band.
 
-## Slide 6 — Core Algorithms
-- SLE, ALE, R = P*V - M + U, AssessITS Risk Impact Rating (1-250) and criticality bands.
-- Note the corrected scaling so ratings stay in band.
+## Slide 6 — Live demo
+- Streamlit Cloud URL or localhost:8501.
+- Load demo → run assessment → results → one PDF.
 
-## Slide 7 — Live Demo (link to running app)
-- Load demo data, run assessment, show dashboard, heat map, register.
-- Show one PDF report.
+## Slide 7 — Security
+- STRIDE mapping; pytest security suite (SQLi, XSS, load).
 
-## Slide 8 — Security Analysis
-- STRIDE threat model mapped to controls.
-- Test results table: SQLi, XSS, validation, rate limit, LLM fallback, load.
+## Slide 8 — Results
+- Sample chart: top risks from demo inventory.
 
-## Slide 9 — Results
-- Charts: risk distribution, top risks, ALE by asset.
-- Total ALE and highest risk from the demo inventory.
+## Slide 9 — Conclusion
+- Deliverables: code, report, security doc, Streamlit deploy.
 
-## Slide 10 — Conclusion and Future Work
-- Objectives met; lessons learned (TDD caught the scaling bug; graceful fallbacks).
-- Future: auth, Monte Carlo, CPE-based CVE matching, containerisation.
+## Slide 10 — Q&A
+- Be ready: AssessITS scaling, SQLite on Cloud, LLM fallback, deployment steps.
 
-## Slide 11 — Q&A
-- Be ready to explain: why quantitative vs qualitative, how AssessITS rating is bounded, how injection/XSS are prevented, how the LLM fallback works.
-
-## Demo backup
-- If the network is down, the CVE and LLM features fall back to bundled data — the demo still works fully offline.
+## Deploy talking points
+1. Push repo to GitHub.
+2. share.streamlit.io → New app → `app.py`.
+3. Optional `ANTHROPIC_API_KEY` in Secrets.

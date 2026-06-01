@@ -5,7 +5,7 @@ compliance.py — NIST 800-30 compliance checklist API.
 from flask import Blueprint, request
 
 from database import models
-from routes.reports import NIST_CONTROLS
+from constants import NIST_CONTROLS
 from utils import api_response, escape_output, get_session_id, rate_limit
 
 compliance_bp = Blueprint("compliance", __name__, url_prefix="/api/compliance")

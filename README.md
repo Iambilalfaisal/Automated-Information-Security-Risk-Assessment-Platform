@@ -6,43 +6,59 @@ Web-based platform for quantitative risk assessment (NIST SP 800-30 + AssessITS)
 
 ## Tech Stack
 
-- **Backend:** Python 3.11+, Flask, SQLite
-- **Frontend:** React 18, Vite, Tailwind CSS, Recharts
+- **UI (primary):** Streamlit — single app, easy deploy on [Streamlit Cloud](https://share.streamlit.io)
+- **Backend:** Python 3.11+, SQLite, risk engine, ReportLab PDFs
+- **API (optional):** Flask REST for programmatic access
 - **LLM:** Anthropic Claude (optional; rule-based fallback included)
 - **CVE:** NVD API v2.0 (mock fallback included)
-- **PDF:** ReportLab
 
-## Quick Start
+## Quick Start (Streamlit — recommended)
 
-### Backend
+One terminal, no Node.js required:
 
 ```powershell
-cd backend
+cd "c:\Users\PC\Desktop\Uni work\IS Project"
 python -m venv venv
 .\venv\Scripts\activate
 pip install -r requirements.txt
-copy ..\.env.example ..\.env
-python app.py
+copy .env.example .env
+streamlit run app.py
 ```
 
-API runs at `http://localhost:5000`
+Open **http://localhost:8501** → **Assessment** → **Load Demo Data** → **Run Assessment** → **Results**.
 
-### Frontend
+### Deploy on Streamlit Cloud
 
-```powershell
-cd frontend
-npm install
-npm run dev
-```
+1. Push this repo to GitHub.
+2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app**.
+3. **Main file path:** `app.py`
+4. **Python:** 3.11 or 3.12
+5. Optional **Secrets** (TOML): `ANTHROPIC_API_KEY = "your-key"` for live Claude recommendations.
 
-UI runs at `http://localhost:5173`
+**Note:** SQLite data on Streamlit Cloud is ephemeral (resets on redeploy). Use **Load Demo Data** for each demo session.
 
 ### Tests
 
 ```powershell
 cd backend
-.\venv\Scripts\activate
+..\venv\Scripts\activate
 pytest -v
+```
+
+## Legacy: Flask API + React frontend
+
+The original React UI remains in [frontend/](frontend/) for reference. To run it you need **two** terminals (Flask on port 5000 + Vite on 5173). Prefer Streamlit for demos and deployment.
+
+```powershell
+# Terminal 1 — API
+cd backend
+.\venv\Scripts\activate
+python app.py
+
+# Terminal 2 — React
+cd frontend
+npm install
+npm run dev
 ```
 
 ## API Documentation
@@ -115,11 +131,13 @@ Open `docs/Technical_Report.docx` in Microsoft Word and choose **Update Field**
 ## Project Structure
 
 ```
-risk-assessment-platform/
-├── backend/          # Flask API, risk engine, PDF, CVE, LLM
-├── frontend/         # React + Tailwind + Recharts
-├── SECURITY_TESTING_REPORT.md
-└── .env.example
+├── app.py              # Streamlit entry (primary UI)
+├── pages/              # Assessment & Results
+├── streamlit_lib/      # Session, charts, services
+├── backend/            # Risk engine, DB, PDF, CVE, LLM, optional Flask API
+├── frontend/           # Legacy React UI
+├── docs/               # Technical report & figures
+└── requirements.txt    # Root deps for Streamlit Cloud
 ```
 
 ## Screenshots

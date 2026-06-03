@@ -8,6 +8,7 @@ from streamlit_lib.paths import ensure_backend_path
 
 ensure_backend_path()
 
+import dataset_loader  # noqa: E402
 import seed_data  # noqa: E402
 from database import models  # noqa: E402
 from modules.cve_fetcher import fetch_cves_for_asset  # noqa: E402
@@ -21,8 +22,8 @@ session_id = get_session_id()
 st.title("Risk Assessment")
 st.caption("Add assets and threats, then run the quantitative risk analysis.")
 
-# Organisation & demo
-col_a, col_b, col_c = st.columns([2, 1, 1])
+# Organisation, demo, dataset, and run
+col_a, col_b, col_c, col_d = st.columns([2, 1, 1, 1])
 with col_a:
     st.session_state.org_name = st.text_input(
         "Organisation name",
@@ -34,6 +35,18 @@ with col_b:
         st.success(f"Loaded {result['assets']} assets and {result['threats']} threats.")
         st.rerun()
 with col_c:
+    if st.button("Load Dataset", type="secondary", use_container_width=True):
+        try:
+            result = dataset_loader.load_dataset(session_id, reset=True)
+            st.success(
+                f"Loaded {result['assets']} assets and {result['threats']} threats from CSV dataset."
+            )
+            st.rerun()
+        except FileNotFoundError as e:
+            st.error(str(e))
+        except Exception as e:
+            st.error(f"Dataset load failed: {e}")
+with col_d:
     if st.button("Run Assessment", type="primary", use_container_width=True):
         try:
             run_assessment(session_id, st.session_state.org_name)
@@ -42,6 +55,29 @@ with col_c:
             st.error(str(e))
         except Exception as e:
             st.error(f"Assessment failed: {e}")
+
+# Optional CSV upload
+with st.expander("Upload custom CSV dataset"):
+    st.caption(
+        "CSV must have columns: asset_name, asset_type, value_usd, description, software, "
+        "threat_name, threat_category, probability, vulnerability_score, "
+        "mitigation_effectiveness, aro, exposure_factor, uncertainty, threat_level"
+    )
+    uploaded = st.file_uploader("Choose CSV file", type=["csv"], key="csv_upload")
+    if uploaded is not None:
+        import tempfile, os  # noqa: E401
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".csv") as tmp:
+            tmp.write(uploaded.read())
+            tmp_path = tmp.name
+        try:
+            result = dataset_loader.load_dataset(session_id, csv_path=tmp_path, reset=True)
+            st.success(f"Loaded {result['assets']} assets and {result['threats']} threats.")
+            st.rerun()
+        except Exception as e:
+            st.error(f"Failed to load CSV: {e}")
+        finally:
+            os.unlink(tmp_path)
 
 st.divider()
 
@@ -84,6 +120,12 @@ if submitted_asset:
                         st.markdown(
                             f"- **{c['cve_id']}** ({sev}, CVSS {c.get('cvss_score', 'N/A')}) — "
                             f"{c.get('description', '')[:120]}…"
+                        )
+                        models.add_notification(
+                            session_id,
+                            f"CVE {c['cve_id']} ({sev}, CVSS {c.get('cvss_score', 'N/A')}) "
+                            f"on {asset['name']}: {c.get('description', '')[:80]}",
+                            severity="warning",
                         )
         except Exception as e:
             st.error(str(e))

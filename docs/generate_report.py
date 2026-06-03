@@ -99,9 +99,9 @@ def abstract(doc):
         "following NIST SP 800-30 and the AssessITS methodology. The system calculates "
         "Single Loss Expectancy, Annualised Loss Expectancy, a composite risk score, "
         "and an AssessITS Risk Impact Rating that maps each asset-threat pair to a "
-        "criticality band. A Flask backend exposes a REST API backed by SQLite, while "
-        "a React dashboard visualises the prioritised risk register, a likelihood-"
-        "versus-impact heat map, and a NIST 800-30 compliance checklist. The platform "
+        "criticality band. A Streamlit web application backed by SQLite provides an "
+        "interactive UI for data entry and visualisation, including a likelihood-"
+        "versus-impact heat map and a NIST 800-30 compliance checklist. The platform "
         "integrates the National Vulnerability Database to surface relevant CVEs and a "
         "large language model advisor to recommend security controls in plain English, "
         "each with graceful offline fallbacks. Downloadable PDF reports document the "
@@ -160,7 +160,7 @@ def introduction(doc):
             "Provide a REST API and database to manage assets, threats, and assessment results securely.",
             "Generate a prioritised risk register, cost-benefit analysis, and NIST 800-30 compliance checklist as downloadable PDF reports.",
             "Integrate CVE intelligence from the National Vulnerability Database and plain-English control recommendations via a large language model, with offline fallbacks.",
-            "Deliver an interactive React dashboard for data entry and visualisation.",
+            "Deliver an interactive Streamlit web application for data entry, visualisation, and one-click PDF export, deployable to Streamlit Cloud.",
             "Validate the system against common web security threats and concurrent load.",
         ],
     )

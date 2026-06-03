@@ -18,6 +18,7 @@ from modules.report_generator import (  # noqa: E402
 from streamlit_lib.charts import (  # noqa: E402
     plot_ale_by_asset,
     plot_criticality_pie,
+    plot_risk_heatmap,
     plot_top_risks_bar,
 )
 from streamlit_lib.services import get_compliance_data  # noqa: E402
@@ -41,7 +42,20 @@ summary = results.get("summary", {})
 org_name = summary.get("org_name", "Organisation")
 llm = results.get("llm_recommendations", {})
 
-# Metrics
+# --- CVE Alerts banner ---
+notifications = models.get_notifications(session_id, unread_only=False)
+if notifications:
+    with st.expander(f"⚠️ CVE Alerts ({len(notifications)})", expanded=True):
+        for n in notifications[:10]:
+            sev = n.get("severity", "info")
+            if sev == "warning":
+                st.warning(n["message"])
+            elif sev == "error":
+                st.error(n["message"])
+            else:
+                st.info(n["message"])
+
+# --- Summary metrics ---
 m1, m2, m3, m4 = st.columns(4)
 m1.metric("Total assets", summary.get("total_assets", 0))
 m2.metric("Total threats", summary.get("total_threats", 0))
@@ -54,16 +68,35 @@ m4.metric(
 
 st.divider()
 
-# Charts
+# --- Charts ---
 c1, c2 = st.columns(2)
 with c1:
     plot_criticality_pie(register)
 with c2:
     plot_top_risks_bar(register)
+
+plot_risk_heatmap(register)
 plot_ale_by_asset(register)
 
 st.subheader("Risk register")
-filter_text = st.text_input("Filter by asset or threat name", "")
+
+# Filter + sort controls
+fc1, fc2 = st.columns([3, 1])
+with fc1:
+    filter_text = st.text_input("Filter by asset or threat name", "")
+with fc2:
+    sort_label = st.selectbox(
+        "Sort by",
+        ["Impact Rating ↓", "ALE ↓", "Risk Score ↓"],
+        key="sort_col",
+    )
+
+_SORT_KEY = {
+    "Impact Rating ↓": "risk_impact_rating",
+    "ALE ↓": "ale",
+    "Risk Score ↓": "risk_score",
+}
+
 filtered = register
 if filter_text:
     ft = filter_text.lower()
@@ -74,8 +107,20 @@ if filter_text:
         or ft in (r.get("threat_name") or "").lower()
     ]
 
+filtered = sorted(filtered, key=lambda r: r.get(_SORT_KEY[sort_label], 0), reverse=True)
+
 if filtered:
     import pandas as pd
+
+    CRIT_BG = {
+        "Critical": "#fca5a5",
+        "High": "#fed7aa",
+        "Medium": "#fef08a",
+        "Low": "#bbf7d0",
+    }
+
+    def _color_criticality(col):
+        return [f"background-color: {CRIT_BG.get(v, '')}" for v in col]
 
     df = pd.DataFrame(
         [
@@ -92,11 +137,15 @@ if filtered:
             for r in filtered
         ]
     )
-    st.dataframe(df, use_container_width=True, hide_index=True)
+    st.dataframe(
+        df.style.apply(_color_criticality, subset=["Criticality"]),
+        use_container_width=True,
+        hide_index=True,
+    )
 else:
     st.info("No rows match the filter.")
 
-# LLM recommendations
+# --- LLM recommendations ---
 recs = llm.get("recommendations", [])
 if recs:
     st.subheader(f"Control recommendations ({llm.get('source', 'unknown')})")
@@ -110,7 +159,7 @@ if recs:
 
 st.divider()
 
-# PDF downloads
+# --- PDF downloads ---
 st.subheader("Download reports")
 summary_text = ""
 if recs:
@@ -150,7 +199,7 @@ with d3:
 
 st.divider()
 
-# Compliance checklist
+# --- Compliance checklist ---
 st.subheader("NIST SP 800-30 compliance checklist")
 comp_data = get_compliance_data(session_id)
 st.progress(comp_data["score_percent"] / 100.0, text=f"Compliance: {comp_data['score_percent']}%")

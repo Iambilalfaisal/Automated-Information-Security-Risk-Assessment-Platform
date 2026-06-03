@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Recurse -Path frontend/src -Filter \"*.jsx\" -ErrorAction SilentlyContinue)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(.\\\\venv\\\\Scripts\\\\python.exe -m pytest backend/tests -v)",
+      "Bash(./venv/Scripts/python.exe -m pytest backend/tests -v)"
+    ]
+  }
+}

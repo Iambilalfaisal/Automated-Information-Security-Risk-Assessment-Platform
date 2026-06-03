@@ -88,6 +88,16 @@ Pass session via header `X-Session-Id` or query `session_id`.
 | GET | `/api/reports/compliance` | Compliance PDF |
 | GET | `/api/health` | Health check |
 
+## Dataset
+
+`data/assessits_sample_inventory.csv` — 20-row synthetic SME scenario (10 assets, 20 threats)
+aligned with AssessITS (arXiv:2410.01750) and NIST SP 800-30. Provenance: hand-crafted by
+the project team to represent a realistic small enterprise; values calibrated against published
+NIST worked examples and AssessITS 1–5 scales. No real organisation data is included.
+
+Load it with the **Load Dataset** button on the Assessment page, or upload your own CSV
+(same column schema). Optional CSV upload is available via the expander on the Assessment page.
+
 ## Demo Data
 
 Load a realistic sample inventory (5 assets, 8 threats) in one click via the

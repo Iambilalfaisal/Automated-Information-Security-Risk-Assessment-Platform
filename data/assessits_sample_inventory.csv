@@ -1,0 +1,21 @@
+asset_name,asset_type,value_usd,description,software,threat_name,threat_category,probability,vulnerability_score,mitigation_effectiveness,aro,exposure_factor,uncertainty,threat_level
+Web Application Server,Software,500000,Public-facing HTTPS application server in the DMZ,nginx,Cross-Site Scripting (XSS),Adversarial,0.60,4,0.35,1.5,0.30,0.10,4
+Web Application Server,Software,500000,Public-facing HTTPS application server in the DMZ,nginx,Directory Traversal,Adversarial,0.40,3,0.45,0.8,0.20,0.10,3
+Customer Database,Data,850000,Primary MySQL database storing customer PII and payment records,mysql,SQL Injection,Adversarial,0.65,5,0.30,1.2,0.40,0.15,5
+Customer Database,Data,850000,Primary MySQL database storing customer PII and payment records,mysql,Insider Data Exfiltration,Adversarial,0.30,4,0.45,0.5,0.35,0.20,4
+HR Information System,People,200000,SAP-based HR platform holding employee personal data and payroll,sap,Insider Threat – Privilege Abuse,Adversarial,0.25,3,0.50,0.3,0.25,0.20,3
+HR Information System,People,200000,SAP-based HR platform holding employee personal data and payroll,sap,Phishing Credential Theft,Adversarial,0.70,3,0.40,3.0,0.15,0.10,4
+Core Network Infrastructure,Hardware,400000,Routers, switches, and firewall appliances for the corporate LAN,fortios,Firewall Misconfiguration,Structural,0.35,4,0.55,0.6,0.25,0.15,3
+Core Network Infrastructure,Hardware,400000,Routers, switches, and firewall appliances for the corporate LAN,fortios,Man-in-the-Middle Attack,Adversarial,0.30,4,0.50,0.5,0.30,0.10,4
+Employee Laptop Fleet,Hardware,220000,150 Windows laptops used by staff across office and remote locations,windows,Ransomware Infection,Adversarial,0.50,4,0.40,1.0,0.30,0.15,5
+Employee Laptop Fleet,Hardware,220000,150 Windows laptops used by staff across office and remote locations,windows,Drive Encryption Failure,Structural,0.20,2,0.60,0.4,0.15,0.10,2
+Cloud Storage Bucket,Data,300000,AWS S3 buckets storing backup archives and business documents,aws-s3,Misconfigured Public Access,Accidental,0.45,4,0.35,0.8,0.50,0.15,4
+Cloud Storage Bucket,Data,300000,AWS S3 buckets storing backup archives and business documents,aws-s3,Ransomware via Compromised Credential,Adversarial,0.35,3,0.45,0.6,0.40,0.15,4
+VPN Gateway,Hardware,150000,Cisco SSL VPN appliance providing remote access,cisco,Brute Force / Credential Stuffing,Adversarial,0.55,3,0.50,2.0,0.20,0.10,3
+VPN Gateway,Hardware,150000,Cisco SSL VPN appliance providing remote access,cisco,Known CVE Exploitation,Adversarial,0.40,4,0.40,0.8,0.30,0.10,4
+Email Server,Software,180000,On-premises Microsoft Exchange handling all corporate email,exchange,Business Email Compromise (BEC),Adversarial,0.50,3,0.40,1.5,0.25,0.20,4
+Payroll Processing System,Process,300000,Business process and software handling monthly payroll runs,linux,Business Email Compromise,Adversarial,0.40,3,0.40,0.7,0.30,0.20,4
+Backup & Recovery System,Hardware,120000,Tape and disk backup systems for disaster recovery,veritas,Backup Corruption,Accidental,0.25,2,0.55,0.3,0.40,0.15,2
+Backup & Recovery System,Hardware,120000,Tape and disk backup systems for disaster recovery,veritas,Natural Disaster – Flood,Natural,0.10,3,0.30,0.1,0.80,0.30,3
+SIEM Platform,Software,250000,Security information and event management system,splunk,Log Tampering by Insider,Adversarial,0.20,3,0.55,0.3,0.20,0.15,3
+SIEM Platform,Software,250000,Security information and event management system,splunk,Denial-of-Service on SIEM Ingestion,Adversarial,0.30,2,0.50,0.5,0.15,0.10,3

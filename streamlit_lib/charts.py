@@ -2,6 +2,8 @@
 charts.py — Plotly charts for the Streamlit results dashboard.
 """
 
+import math
+
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
@@ -53,6 +55,63 @@ def plot_top_risks_bar(register: list) -> None:
         xaxis_title="AssessITS Impact Rating (1-250)",
         xaxis_range=[0, 250],
         height=400,
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def plot_risk_heatmap(register: list) -> None:
+    """
+    5×5 Likelihood vs Impact heat map (AssessITS).
+
+    X-axis: Impact bins 1–5 mapped from vulnerability_score (1–5).
+    Y-axis: Likelihood bins 1–5 mapped from probability via ceil(p*5), clamped 1–5.
+    Cell value: count of risks in that bin; colour intensity scales with count.
+    """
+    if not register:
+        st.info("No risks to display in heat map.")
+        return
+
+    # Build 5×5 count matrix and track worst criticality per cell
+    CRIT_RANK = {"Low": 0, "Medium": 1, "High": 2, "Critical": 3}
+    counts = [[0] * 5 for _ in range(5)]
+    worst = [[""] * 5 for _ in range(5)]
+
+    for r in register:
+        prob = float(r.get("probability", 0))
+        vuln = int(r.get("vulnerability_score", 1))
+        crit = r.get("risk_criticality", "Low")
+
+        lbin = min(max(math.ceil(prob * 5), 1), 5) - 1   # row 0-4
+        ibin = min(max(vuln, 1), 5) - 1                  # col 0-4
+
+        counts[lbin][ibin] += 1
+        if CRIT_RANK.get(crit, 0) >= CRIT_RANK.get(worst[lbin][ibin], 0):
+            worst[lbin][ibin] = crit
+
+    axis_labels = ["1 (Low)", "2", "3", "4", "5 (High)"]
+    text_matrix = [
+        [f"{counts[r][c]}<br>{worst[r][c]}" if counts[r][c] else "" for c in range(5)]
+        for r in range(5)
+    ]
+
+    fig = go.Figure(
+        go.Heatmap(
+            z=counts,
+            x=axis_labels,
+            y=axis_labels,
+            text=text_matrix,
+            texttemplate="%{text}",
+            colorscale=[[0, "#f0fdf4"], [0.33, "#fef08a"], [0.66, "#fed7aa"], [1, "#DC2626"]],
+            showscale=True,
+            colorbar={"title": "Risk count"},
+            hovertemplate="Likelihood: %{y}<br>Impact: %{x}<br>Count: %{z}<extra></extra>",
+        )
+    )
+    fig.update_layout(
+        title="Likelihood vs Impact Heat Map (AssessITS)",
+        xaxis_title="Impact (Vulnerability Level 1–5)",
+        yaxis_title="Likelihood (Probability 0–1 → 1–5)",
+        height=380,
     )
     st.plotly_chart(fig, use_container_width=True)
 

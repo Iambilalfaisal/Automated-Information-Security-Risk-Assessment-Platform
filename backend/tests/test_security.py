@@ -7,7 +7,8 @@ import threading
 
 import pytest
 
-from app import create_app
+flask = pytest.importorskip("flask", reason="flask not installed — skipping security tests")
+from app import create_app  # noqa: E402
 from database import models
 from modules.llm_advisor import get_control_recommendations
 from modules.risk_engine import calculate_sle, validate_assessment_inputs

@@ -3,6 +3,7 @@ llm_advisor.py — Claude API control recommendations with rule-based fallback.
 """
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -64,13 +65,14 @@ def get_control_recommendations(
     if not risk_register:
         return {"recommendations": [], "source": "empty", "framework": framework}
 
-    if not config.ANTHROPIC_API_KEY:
+    api_key = os.getenv("ANTHROPIC_API_KEY") or config.ANTHROPIC_API_KEY
+    if not api_key:
         return get_fallback_recommendations(risk_register)
 
     try:
         import anthropic
 
-        client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
+        client = anthropic.Anthropic(api_key=api_key)
         top5 = risk_register[:5]
         context = json.dumps(top5, indent=2)
         system = (

@@ -5,6 +5,7 @@
 import streamlit as st
 
 from streamlit_lib.paths import ensure_backend_path
+from streamlit_lib.style import apply_theme, section_header
 
 ensure_backend_path()
 
@@ -15,12 +16,24 @@ from modules.cve_fetcher import fetch_cves_for_asset  # noqa: E402
 from streamlit_lib.services import run_assessment  # noqa: E402
 from streamlit_lib.session import get_session_id, init_session  # noqa: E402
 
-st.set_page_config(page_title="Assessment", layout="wide")
+st.set_page_config(page_title="Assessment", page_icon="📋", layout="wide")
 init_session()
+apply_theme()
 session_id = get_session_id()
 
-st.title("Risk Assessment")
-st.caption("Add assets and threats, then run the quantitative risk analysis.")
+st.markdown(
+    """
+    <div style="margin-bottom:0.5rem">
+        <h1 style="font-size:1.9rem;font-weight:800;color:#f1f5f9;margin:0">
+            Risk Assessment
+        </h1>
+        <p style="color:#475569;font-size:0.88rem;margin:0.3rem 0 0 0">
+            Add assets &amp; threats, load sample data, then run the quantitative analysis.
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 # Organisation, demo, dataset, and run
 col_a, col_b, col_c, col_d = st.columns([2, 1, 1, 1])
@@ -82,7 +95,7 @@ with st.expander("Upload custom CSV dataset"):
 st.divider()
 
 # --- Add asset ---
-st.subheader("Add asset")
+section_header("Add Asset", "Define an asset in your organisation's inventory")
 ASSET_TYPES = ["Hardware", "Software", "Data", "People", "Process"]
 
 with st.form("add_asset", clear_on_submit=True):
@@ -132,7 +145,7 @@ if submitted_asset:
 
 # --- Add threat ---
 assets = models.get_assets(session_id)
-st.subheader("Add threat")
+section_header("Add Threat", "Map a threat to an asset using NIST SP 800-30 parameters")
 if not assets:
     st.info("Add at least one asset before defining threats.")
 else:
@@ -192,7 +205,7 @@ st.divider()
 # --- Lists ---
 col_assets, col_threats = st.columns(2)
 with col_assets:
-    st.subheader(f"Assets ({len(assets)})")
+    section_header(f"Assets ({len(assets)})")
     if assets:
         for a in assets:
             ac1, ac2 = st.columns([4, 1])
@@ -212,7 +225,7 @@ with col_assets:
 
 with col_threats:
     threats = models.get_threats(session_id=session_id)
-    st.subheader(f"Threats ({len(threats)})")
+    section_header(f"Threats ({len(threats)})")
     if threats:
         for t in threats:
             tc1, tc2 = st.columns([4, 1])

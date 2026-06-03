@@ -1,23 +1,41 @@
 """
-charts.py — Plotly charts for the Streamlit results dashboard.
+charts.py — Animated Plotly charts for the Streamlit results dashboard.
 """
 
 import math
 
-import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
 CRIT_COLORS = {
-    "Critical": "#DC2626",
-    "High": "#EA580C",
-    "Medium": "#CA8A04",
-    "Low": "#16A34A",
+    "Critical": "#ef4444",
+    "High":     "#f97316",
+    "Medium":   "#eab308",
+    "Low":      "#22c55e",
 }
+
+_BG    = "#1e293b"
+_GRID  = "#243044"
+_TEXT  = "#94a3b8"
+_TITLE = "#e2e8f0"
+
+_BASE_LAYOUT = dict(
+    paper_bgcolor=_BG,
+    plot_bgcolor=_BG,
+    font=dict(color=_TEXT, family="sans-serif", size=12),
+    title_font=dict(color=_TITLE, size=14, family="sans-serif"),
+    margin=dict(t=44, b=24, l=12, r=12),
+    hoverlabel=dict(bgcolor="#0f172a", bordercolor="#334155", font=dict(color="#e2e8f0")),
+)
+
+
+def _axis(gridcolor=_GRID, zerocolor=_GRID, **kw):
+    return dict(gridcolor=gridcolor, zerolinecolor=zerocolor,
+                tickcolor=_GRID, linecolor=_GRID, **kw)
 
 
 def plot_criticality_pie(register: list) -> None:
-    """Pie chart of risk count by criticality."""
+    """Animated donut chart — critical slice pulled out for emphasis."""
     counts: dict[str, int] = {}
     for r in register:
         c = r.get("risk_criticality", "Low")
@@ -25,109 +43,234 @@ def plot_criticality_pie(register: list) -> None:
     if not counts:
         st.info("No risks to chart.")
         return
+
     labels = [k for k in ["Critical", "High", "Medium", "Low"] if k in counts]
-    fig = px.pie(
-        names=labels,
-        values=[counts[k] for k in labels],
+    values = [counts[k] for k in labels]
+    pull   = [0.12 if l == "Critical" else 0.02 for l in labels]
+
+    fig = go.Figure(go.Pie(
+        labels=labels,
+        values=values,
+        hole=0.52,
+        pull=pull,
+        marker=dict(
+            colors=[CRIT_COLORS[l] for l in labels],
+            line=dict(color="#0f172a", width=2),
+        ),
+        textfont=dict(color="#e2e8f0", size=12),
+        hovertemplate="<b>%{label}</b><br>Count: %{value}<br>Share: %{percent}<extra></extra>",
+        rotation=90,
+    ))
+
+    total = sum(values)
+    fig.add_annotation(
+        text=f"<b>{total}</b><br><span style='font-size:10px'>risks</span>",
+        x=0.5, y=0.5, showarrow=False,
+        font=dict(color="#e2e8f0", size=18),
+    )
+    fig.update_layout(
         title="Risk Distribution by Criticality",
-        color=labels,
-        color_discrete_map=CRIT_COLORS,
+        legend=dict(font=dict(color=_TEXT), bgcolor="rgba(0,0,0,0)", orientation="h", y=-0.05),
+        **_BASE_LAYOUT,
     )
     st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_top_risks_bar(register: list) -> None:
-    """Horizontal bar chart of top risks by impact rating."""
+    """Horizontal bar chart with value labels and mid-scale reference line."""
     top = register[:10]
     if not top:
         return
-    labels = [f"{r['asset_name'][:15]} / {r['threat_name'][:15]}" for r in top]
-    fig = go.Figure(
-        go.Bar(
-            y=labels[::-1],
-            x=[r["risk_impact_rating"] for r in top][::-1],
-            orientation="h",
-            marker_color=[CRIT_COLORS.get(r["risk_criticality"], "#94a3b8") for r in top][::-1],
-        )
+
+    labels  = [f"{r['asset_name'][:13]} / {r['threat_name'][:13]}" for r in top]
+    ratings = [r["risk_impact_rating"] for r in top]
+    colors  = [CRIT_COLORS.get(r["risk_criticality"], _TEXT) for r in top]
+
+    fig = go.Figure(go.Bar(
+        y=labels[::-1],
+        x=ratings[::-1],
+        orientation="h",
+        marker=dict(color=colors[::-1], opacity=0.88, line=dict(width=0)),
+        text=[f"  {v:.0f}" for v in ratings[::-1]],
+        textposition="outside",
+        textfont=dict(color=_TEXT, size=11),
+        hovertemplate="<b>%{y}</b><br>Impact Rating: %{x:.0f}<extra></extra>",
+    ))
+    fig.add_vline(
+        x=125,
+        line_dash="dot", line_color="#334155", line_width=1.5,
+        annotation_text="Mid (125)",
+        annotation_font_color="#475569",
+        annotation_font_size=10,
+        annotation_position="top",
     )
     fig.update_layout(
         title="Top Risks by Impact Rating",
-        xaxis_title="AssessITS Impact Rating (1-250)",
-        xaxis_range=[0, 250],
-        height=400,
+        xaxis_title="AssessITS Impact Rating (1–250)",
+        xaxis_range=[0, 285],
+        height=420,
+        **_BASE_LAYOUT,
     )
+    fig.update_xaxes(**_axis())
+    fig.update_yaxes(**_axis())
     st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_risk_heatmap(register: list) -> None:
     """
-    5×5 Likelihood vs Impact heat map (AssessITS).
+    5×5 Likelihood × Impact heat map (AssessITS methodology).
 
-    X-axis: Impact bins 1–5 mapped from vulnerability_score (1–5).
-    Y-axis: Likelihood bins 1–5 mapped from probability via ceil(p*5), clamped 1–5.
-    Cell value: count of risks in that bin; colour intensity scales with count.
+    X: impact bins 1–5 from vulnerability_score.
+    Y: likelihood bins 1–5 from probability via ceil(p×5).
     """
     if not register:
         st.info("No risks to display in heat map.")
         return
 
-    # Build 5×5 count matrix and track worst criticality per cell
     CRIT_RANK = {"Low": 0, "Medium": 1, "High": 2, "Critical": 3}
     counts = [[0] * 5 for _ in range(5)]
-    worst = [[""] * 5 for _ in range(5)]
+    worst  = [[""] * 5 for _ in range(5)]
 
     for r in register:
-        prob = float(r.get("probability", 0))
-        vuln = int(r.get("vulnerability_score", 1))
-        crit = r.get("risk_criticality", "Low")
-
-        lbin = min(max(math.ceil(prob * 5), 1), 5) - 1   # row 0-4
-        ibin = min(max(vuln, 1), 5) - 1                  # col 0-4
-
+        prob  = float(r.get("probability", 0))
+        vuln  = int(r.get("vulnerability_score", 1))
+        crit  = r.get("risk_criticality", "Low")
+        lbin  = min(max(math.ceil(prob * 5), 1), 5) - 1
+        ibin  = min(max(vuln, 1), 5) - 1
         counts[lbin][ibin] += 1
         if CRIT_RANK.get(crit, 0) >= CRIT_RANK.get(worst[lbin][ibin], 0):
             worst[lbin][ibin] = crit
 
-    axis_labels = ["1 (Low)", "2", "3", "4", "5 (High)"]
+    axis_labels = ["1 — Low", "2", "3", "4", "5 — High"]
     text_matrix = [
-        [f"{counts[r][c]}<br>{worst[r][c]}" if counts[r][c] else "" for c in range(5)]
+        [f"<b>{counts[r][c]}</b><br><sub>{worst[r][c]}</sub>"
+         if counts[r][c] else "" for c in range(5)]
         for r in range(5)
     ]
+    colorscale = [
+        [0.00, "#1e293b"],
+        [0.01, "#1e3a5f"],
+        [0.35, "#92400e"],
+        [0.70, "#7c2d12"],
+        [1.00, "#7f1d1d"],
+    ]
 
-    fig = go.Figure(
-        go.Heatmap(
-            z=counts,
-            x=axis_labels,
-            y=axis_labels,
-            text=text_matrix,
-            texttemplate="%{text}",
-            colorscale=[[0, "#f0fdf4"], [0.33, "#fef08a"], [0.66, "#fed7aa"], [1, "#DC2626"]],
-            showscale=True,
-            colorbar={"title": "Risk count"},
-            hovertemplate="Likelihood: %{y}<br>Impact: %{x}<br>Count: %{z}<extra></extra>",
-        )
-    )
+    fig = go.Figure(go.Heatmap(
+        z=counts,
+        x=axis_labels,
+        y=axis_labels,
+        text=text_matrix,
+        texttemplate="%{text}",
+        textfont=dict(color="#e2e8f0", size=11),
+        colorscale=colorscale,
+        showscale=True,
+        colorbar=dict(
+            title="Count",
+            tickfont=dict(color=_TEXT),
+            titlefont=dict(color=_TEXT),
+            bgcolor=_BG,
+            bordercolor="#334155",
+        ),
+        hovertemplate="Likelihood: %{y}<br>Impact: %{x}<br>Risk count: %{z}<extra></extra>",
+    ))
     fig.update_layout(
-        title="Likelihood vs Impact Heat Map (AssessITS)",
-        xaxis_title="Impact (Vulnerability Level 1–5)",
-        yaxis_title="Likelihood (Probability 0–1 → 1–5)",
-        height=380,
+        title="Likelihood × Impact Heat Map (AssessITS)",
+        xaxis_title="Impact  (Vulnerability Score 1–5)",
+        yaxis_title="Likelihood  (Probability → 1–5)",
+        height=410,
+        **_BASE_LAYOUT,
     )
+    fig.update_xaxes(**_axis())
+    fig.update_yaxes(**_axis())
     st.plotly_chart(fig, use_container_width=True)
 
 
 def plot_ale_by_asset(register: list) -> None:
-    """Bar chart of total ALE per asset."""
+    """Bar chart of ALE per asset, colour-coded low→high."""
     ale_by: dict[str, float] = {}
     for r in register:
         ale_by[r["asset_name"]] = ale_by.get(r["asset_name"], 0) + r["ale"]
     if not ale_by:
         return
-    fig = px.bar(
-        x=list(ale_by.keys()),
-        y=list(ale_by.values()),
-        labels={"x": "Asset", "y": "ALE (USD)"},
-        title="Total Annualised Loss Expectancy by Asset",
+
+    assets = list(ale_by.keys())
+    ales   = list(ale_by.values())
+    max_v  = max(ales) if ales else 1
+
+    colors = []
+    for v in ales:
+        ratio = v / max_v
+        if ratio > 0.7:
+            colors.append("#ef4444")
+        elif ratio > 0.35:
+            colors.append("#f97316")
+        else:
+            colors.append("#3b82f6")
+
+    fig = go.Figure(go.Bar(
+        x=assets,
+        y=ales,
+        marker=dict(color=colors, opacity=0.88, line=dict(width=0)),
+        text=[f"${v:,.0f}" for v in ales],
+        textposition="outside",
+        textfont=dict(color=_TEXT, size=10),
+        hovertemplate="<b>%{x}</b><br>ALE: $%{y:,.0f}<extra></extra>",
+    ))
+    fig.update_layout(
+        title="Annualised Loss Expectancy by Asset",
+        yaxis_title="ALE (USD)",
+        xaxis_tickangle=-30,
+        **_BASE_LAYOUT,
     )
-    fig.update_layout(xaxis_tickangle=-25)
+    fig.update_xaxes(**_axis())
+    fig.update_yaxes(**_axis())
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def plot_compliance_gauge(score: float) -> None:
+    """Animated gauge chart for overall compliance score."""
+    if score < 33:
+        color, label = "#ef4444", "Critical Gap"
+    elif score < 66:
+        color, label = "#f97316", "Partial"
+    else:
+        color, label = "#22c55e", "Strong"
+
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=score,
+        domain={"x": [0, 1], "y": [0, 1]},
+        title={"text": f"Compliance — {label}",
+               "font": {"color": _TEXT, "size": 13, "family": "sans-serif"}},
+        number={"suffix": "%",
+                "font": {"color": _TITLE, "size": 44, "family": "sans-serif"}},
+        gauge={
+            "axis": {
+                "range": [0, 100],
+                "tickcolor": "#334155",
+                "tickfont": {"color": "#475569", "size": 11},
+                "nticks": 6,
+            },
+            "bar": {"color": color, "thickness": 0.65},
+            "bgcolor": "#0f172a",
+            "borderwidth": 0,
+            "steps": [
+                {"range": [0,   33],  "color": "#1a0a0a"},
+                {"range": [33,  66],  "color": "#1a1000"},
+                {"range": [66, 100],  "color": "#0a1a0a"},
+            ],
+            "threshold": {
+                "line": {"color": "#3b82f6", "width": 2},
+                "thickness": 0.78,
+                "value": score,
+            },
+        },
+    ))
+    fig.update_layout(
+        height=240,
+        paper_bgcolor=_BG,
+        plot_bgcolor=_BG,
+        font=dict(color=_TEXT, family="sans-serif"),
+        margin=dict(t=50, b=10, l=30, r=30),
+    )
     st.plotly_chart(fig, use_container_width=True)

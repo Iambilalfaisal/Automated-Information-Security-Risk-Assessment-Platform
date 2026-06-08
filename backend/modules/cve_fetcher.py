@@ -107,8 +107,9 @@ def fetch_cves_for_asset(asset_name: str, asset_software: str) -> list[dict[str,
             parsed = _parse_nvd_response(resp.json())
             if parsed:
                 return parsed
-    except Exception:
-        pass
+    except Exception as exc:
+        import sys
+        print(f"[cve_fetcher] NVD lookup failed for '{keyword}': {type(exc).__name__}: {exc}", file=sys.stderr)
 
     mock = _load_mock_cves(keyword)
     for c in mock:

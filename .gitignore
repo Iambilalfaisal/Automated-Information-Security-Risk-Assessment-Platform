@@ -17,6 +17,9 @@ htmlcov/
 # Environment
 .env
 
+# Streamlit secrets (API keys — never commit)
+.streamlit/secrets.toml
+
 # Database
 *.db
 backend/database/*.db

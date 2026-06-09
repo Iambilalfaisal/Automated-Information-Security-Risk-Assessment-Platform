@@ -210,6 +210,349 @@ details {
     transition: border-color 0.18s ease !important;
 }
 details:hover { border-color: #3b82f6 !important; }
+
+/* ── Treatment strategy badges ── */
+.sbadge {
+    display: inline-block;
+    padding: 0.18rem 0.65rem;
+    border-radius: 99px;
+    font-size: 0.69rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+.sbadge-Mitigate { background: rgba(30,64,175,0.3);  color: #93c5fd; border: 1px solid #1d4ed8; }
+.sbadge-Accept   { background: rgba(20,83,45,0.3);   color: #86efac; border: 1px solid #166534; }
+.sbadge-Transfer { background: rgba(91,33,182,0.3);  color: #c4b5fd; border: 1px solid #6d28d9; }
+.sbadge-Avoid    { background: rgba(127,29,29,0.35); color: #fca5a5; border: 1px solid #991b1b; }
+
+/* ── Treatment status badges ── */
+.tbadge {
+    display: inline-block;
+    padding: 0.18rem 0.65rem;
+    border-radius: 99px;
+    font-size: 0.69rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+.tbadge-Pending      { background: rgba(51,65,85,0.5);  color: #94a3b8; border: 1px solid #334155; }
+.tbadge-In-Progress  { background: rgba(30,64,175,0.3); color: #93c5fd; border: 1px solid #1d4ed8; }
+.tbadge-Completed    { background: rgba(20,83,45,0.55); color: #86efac; border: 1px solid #166534; }
+.tbadge-Accepted     { background: rgba(91,33,182,0.3); color: #c4b5fd; border: 1px solid #6d28d9; }
+
+/* ── Methodology section cards ── */
+.mcard {
+    background: #1e293b;
+    border: 1px solid #2d3f55;
+    border-radius: 12px;
+    padding: 1.4rem 1.5rem;
+    height: 100%;
+    animation: fadeInUp 0.45s ease both;
+}
+.mcard-icon  { font-size: 1.8rem; margin-bottom: 0.7rem; }
+.mcard-title { color: #60a5fa; font-size: 0.78rem; font-weight: 700;
+               text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+.mcard-body  { color: #94a3b8; font-size: 0.84rem; line-height: 1.65; }
+
+/* ════════════════════════════════════════════════════════════
+   EXTENDED ANIMATIONS & DESIGN SYSTEM
+   ════════════════════════════════════════════════════════════ */
+
+@keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+}
+@keyframes gradientFlow {
+    0%   { background-position: 0%   50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0%   50%; }
+}
+@keyframes floatBob {
+    0%, 100% { transform: translateY(0);    }
+    50%      { transform: translateY(-6px); }
+}
+@keyframes scalePop {
+    0%   { opacity: 0; transform: scale(0.92); }
+    70%  { transform: scale(1.02); }
+    100% { opacity: 1; transform: scale(1);    }
+}
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(18px); }
+    to   { opacity: 1; transform: translateX(0);    }
+}
+@keyframes borderGlow {
+    0%, 100% { box-shadow: 0 0 6px  rgba(59,130,246,0.18); }
+    50%      { box-shadow: 0 0 22px rgba(59,130,246,0.48); }
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar           { width: 5px; height: 5px; }
+::-webkit-scrollbar-track     { background: #0a1120; }
+::-webkit-scrollbar-thumb     { background: #2d3f55; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
+/* ── App background ── */
+[data-testid="stAppViewContainer"] { background: #0a1120 !important; }
+.main .block-container { padding-top: 1.8rem !important; }
+
+/* ── Sidebar ── */
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #080e1a 0%, #0f172a 100%) !important;
+    border-right: 1px solid #1e293b !important;
+}
+[data-testid="stSidebarContent"] { background: transparent !important; }
+[data-testid="stSidebarNavLink"] {
+    border-radius: 8px !important;
+    margin: 0.1rem 0.5rem !important;
+    padding: 0.5rem 0.85rem !important;
+    color: #64748b !important;
+    font-weight: 500 !important;
+    font-size: 0.88rem !important;
+    transition: background 0.18s ease, color 0.18s ease !important;
+    border-left: 3px solid transparent !important;
+}
+[data-testid="stSidebarNavLink"]:hover {
+    background: rgba(59,130,246,0.09) !important;
+    color: #93c5fd !important;
+}
+[data-testid="stSidebarNavLink"][aria-current="page"] {
+    background: rgba(59,130,246,0.14) !important;
+    border-left: 3px solid #3b82f6 !important;
+    color: #60a5fa !important;
+    font-weight: 600 !important;
+}
+
+/* ── Stat card shimmer ── */
+.scard { position: relative; overflow: hidden; }
+.scard::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -120%; width: 60%; height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(255,255,255,0.05), transparent);
+    transition: left 0.65s cubic-bezier(0.4,0,0.2,1);
+    pointer-events: none;
+}
+.scard:hover::before { left: 140%; }
+
+/* ── Navigation cards (used on home dashboard) ── */
+.nav-card {
+    background: #1e293b;
+    border: 1px solid #2d3f55;
+    border-radius: 14px;
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 0.4rem;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.45s ease both;
+    transition: transform 0.22s ease, box-shadow 0.22s ease,
+                border-color 0.22s ease, background 0.22s ease;
+    cursor: default;
+}
+.nav-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -120%; width: 55%; height: 100%;
+    background: linear-gradient(105deg, transparent, rgba(59,130,246,0.06), transparent);
+    transition: left 0.6s cubic-bezier(0.4,0,0.2,1);
+    pointer-events: none;
+}
+.nav-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(59,130,246,0.14);
+    border-color: #3b82f6;
+    background: #1a2942;
+}
+.nav-card:hover::before { left: 140%; }
+.nav-card-icon {
+    font-size: 1.55rem; margin-bottom: 0.65rem;
+    display: inline-block;
+    transition: transform 0.22s ease;
+}
+.nav-card:hover .nav-card-icon { transform: scale(1.2) rotate(-4deg); }
+.nav-card-title { color: #e2e8f0; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.3rem; }
+.nav-card-desc  { color: #64748b; font-size: 0.8rem; line-height: 1.55; }
+
+/* ── Hero background (landing page) ── */
+.hero-bg {
+    background: linear-gradient(-45deg, #0a1120, #1e1b4b, #0f172a, #162032);
+    background-size: 400% 400%;
+    animation: gradientFlow 10s ease infinite;
+    border-radius: 18px;
+    padding: 3.5rem 1rem 2.5rem 1rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+.hero-bg::before {
+    content: "";
+    position: absolute;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(59,130,246,0.09) 0%, transparent 70%);
+    top: -80px; right: -60px;
+    animation: floatBob 6s ease-in-out infinite;
+    pointer-events: none;
+}
+.hero-bg::after {
+    content: "";
+    position: absolute;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(129,140,248,0.08) 0%, transparent 70%);
+    bottom: -40px; left: 8%;
+    animation: floatBob 9s ease-in-out infinite reverse;
+    pointer-events: none;
+}
+
+/* ── Animated gradient text ── */
+.grad-text {
+    background: linear-gradient(135deg, #3b82f6, #818cf8, #06b6d4, #3b82f6);
+    background-size: 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s linear infinite;
+}
+
+/* ── Info pill badge ── */
+.info-pill {
+    display: inline-block;
+    background: rgba(59,130,246,0.1);
+    border: 1px solid rgba(59,130,246,0.22);
+    color: #60a5fa;
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.25rem 0.85rem; border-radius: 99px;
+    margin-bottom: 1.2rem;
+    animation: fadeIn 0.6s ease both;
+}
+
+/* ── Animated HR ── */
+hr {
+    border: none !important;
+    height: 1px !important;
+    background: linear-gradient(90deg,
+        transparent,
+        #2d3f55 35%, #334155 50%, #2d3f55 65%,
+        transparent) !important;
+    margin: 1.5rem 0 !important;
+    animation: fadeIn 0.5s ease both !important;
+}
+
+/* ── Enhanced primary button ── */
+[data-testid="baseButton-primary"] {
+    background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+    border: none !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em !important;
+    transition: filter 0.18s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+[data-testid="baseButton-primary"]:hover {
+    filter: brightness(1.1) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 28px rgba(59,130,246,0.45) !important;
+}
+[data-testid="baseButton-primary"]:active {
+    transform: translateY(0) scale(0.97) !important;
+    box-shadow: none !important;
+}
+
+/* ── Download button ── */
+[data-testid="stDownloadButton"] > button {
+    background: #1e293b !important;
+    border: 1px solid #2d3f55 !important;
+    color: #94a3b8 !important;
+    font-weight: 500 !important;
+    transition: border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease !important;
+}
+[data-testid="stDownloadButton"] > button:hover {
+    border-color: #3b82f6 !important;
+    color: #60a5fa !important;
+    box-shadow: 0 4px 16px rgba(59,130,246,0.2) !important;
+}
+
+/* ── Form inputs ── */
+.stTextInput > div > div > input,
+.stTextArea > div > div > textarea,
+.stNumberInput > div > div > input {
+    background: #1a2535 !important;
+    border: 1px solid #2d3f55 !important;
+    border-radius: 8px !important;
+    color: #e2e8f0 !important;
+    transition: border-color 0.18s ease, box-shadow 0.2s ease !important;
+    caret-color: #60a5fa;
+}
+.stTextInput > div > div > input:focus,
+.stTextArea > div > div > textarea:focus,
+.stNumberInput > div > div > input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.18) !important;
+    outline: none !important;
+}
+.stSelectbox > div > div,
+.stMultiSelect > div > div {
+    background: #1a2535 !important;
+    border: 1px solid #2d3f55 !important;
+    border-radius: 8px !important;
+    transition: border-color 0.18s ease !important;
+}
+.stSelectbox > div > div:focus-within {
+    border-color: #3b82f6 !important;
+}
+
+/* ── Slider thumb glow ── */
+[data-testid="stSlider"] > div > div > div > div {
+    background: linear-gradient(90deg, #2563eb, #4f46e5) !important;
+}
+
+/* ── Progress bar glow ── */
+.stProgress > div > div > div > div {
+    background: linear-gradient(90deg, #2563eb, #4f46e5) !important;
+    border-radius: 99px !important;
+    box-shadow: 0 0 8px rgba(59,130,246,0.35) !important;
+    transition: width 0.8s cubic-bezier(0.25,0.46,0.45,0.94) !important;
+}
+
+/* ── DataEditor ── */
+[data-testid="stDataEditor"] {
+    border: 1px solid #2d3f55 !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    animation: fadeInUp 0.45s ease both !important;
+}
+
+/* ── Alerts ── */
+[data-testid="stAlert"] {
+    border-radius: 10px !important;
+    animation: fadeInUp 0.4s ease both !important;
+}
+
+/* ── Tabs ── */
+.stTabs [data-baseweb="tab-list"] {
+    background: transparent !important;
+    gap: 0.4rem !important;
+    border-bottom: 1px solid #1e293b !important;
+}
+.stTabs [data-baseweb="tab"] {
+    background: transparent !important;
+    border-radius: 8px 8px 0 0 !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+    transition: all 0.18s ease !important;
+}
+.stTabs [data-baseweb="tab"]:hover  { color: #94a3b8 !important; }
+.stTabs [aria-selected="true"] {
+    background: rgba(59,130,246,0.1) !important;
+    color: #60a5fa !important;
+}
+.stTabs [data-baseweb="tab-highlight"] {
+    background: #3b82f6 !important;
+    height: 2px !important;
+}
+
+/* ── Caption text ── */
+.stCaption,
+[data-testid="stCaptionContainer"] > * { color: #475569 !important; font-size: 0.78rem !important; }
 </style>
 """
 
@@ -361,6 +704,48 @@ def info_banner(text: str) -> None:
                     border-radius:10px;padding:1rem 1.25rem;margin:0.75rem 0;
                     animation:fadeIn 0.4s ease both">
             <span style="color:#94a3b8;font-size:0.88rem">{text}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def page_header(title: str, subtitle: str = "", badge: str = "") -> None:
+    """
+    Animated page header with shimmer-gradient underline accent.
+
+    Args:
+        title:    Main heading text.
+        subtitle: Optional muted sub-text below the title.
+        badge:    Optional pill badge rendered top-right (e.g. "Assessment Active").
+    """
+    sub_html   = (
+        f'<p style="color:#475569;font-size:0.88rem;margin:0.2rem 0 0 0">{subtitle}</p>'
+        if subtitle else ""
+    )
+    badge_html = (
+        f'<div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);'
+        f'border-radius:99px;color:#60a5fa;font-size:0.68rem;font-weight:700;'
+        f'letter-spacing:0.09em;text-transform:uppercase;padding:0.25rem 0.9rem;'
+        f'white-space:nowrap;margin-top:0.2rem">{badge}</div>'
+        if badge else ""
+    )
+    st.markdown(
+        f"""
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;
+                    flex-wrap:wrap;gap:0.5rem;margin-bottom:1.2rem;
+                    animation:fadeInUp 0.45s ease both">
+            <div style="position:relative;padding-bottom:0.65rem">
+                <h1 style="font-size:1.9rem;font-weight:800;color:#f1f5f9;
+                           margin:0 0 0.15rem 0;line-height:1.2">{title}</h1>
+                {sub_html}
+                <div style="position:absolute;bottom:0;left:0;width:52px;height:3px;
+                            background:linear-gradient(90deg,#3b82f6,#818cf8,#3b82f6);
+                            background-size:200%;
+                            animation:shimmer 2.5s ease infinite;
+                            border-radius:99px"></div>
+            </div>
+            {badge_html}
         </div>
         """,
         unsafe_allow_html=True,

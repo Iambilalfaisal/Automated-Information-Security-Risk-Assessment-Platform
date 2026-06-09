@@ -5,7 +5,7 @@
 import streamlit as st
 
 from streamlit_lib.paths import ensure_backend_path
-from streamlit_lib.style import apply_theme, section_header
+from streamlit_lib.style import apply_theme, page_header, section_header
 
 ensure_backend_path()
 
@@ -21,18 +21,9 @@ init_session()
 apply_theme()
 session_id = get_session_id()
 
-st.markdown(
-    """
-    <div style="margin-bottom:0.5rem">
-        <h1 style="font-size:1.9rem;font-weight:800;color:#f1f5f9;margin:0">
-            Risk Assessment
-        </h1>
-        <p style="color:#475569;font-size:0.88rem;margin:0.3rem 0 0 0">
-            Add assets &amp; threats, load sample data, then run the quantitative analysis.
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True,
+page_header(
+    "Risk Assessment",
+    "Add assets & threats, load sample data, then run the quantitative analysis.",
 )
 
 # Organisation, demo, dataset, and run

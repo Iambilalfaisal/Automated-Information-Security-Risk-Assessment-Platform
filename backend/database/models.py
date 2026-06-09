@@ -382,3 +382,79 @@ def get_notifications(session_id: Optional[str] = None, unread_only: bool = Fals
         query += " ORDER BY created_at DESC LIMIT 50"
         rows = conn.execute(query, params).fetchall()
     return [row_to_dict(r) for r in rows]
+
+
+# --- Assessment History ---
+
+
+def get_all_assessments(session_id: str) -> list[dict[str, Any]]:
+    """List all assessments for session, newest first, with parsed summaries."""
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT id, session_id, created_at, results_json FROM assessments "
+            "WHERE session_id = ? ORDER BY created_at DESC",
+            (session_id,),
+        ).fetchall()
+    result = []
+    for r in rows:
+        d = row_to_dict(r)
+        if d and d.get("results_json"):
+            try:
+                parsed = json.loads(d["results_json"])
+                d["results"] = parsed
+                d["summary"] = parsed.get("summary", {})
+            except Exception:
+                d["summary"] = {}
+        result.append(d)
+    return result
+
+
+# --- Treatment Plans ---
+
+
+def upsert_treatment_plan(
+    session_id: str,
+    asset_name: str,
+    threat_name: str,
+    strategy: str = "Mitigate",
+    owner: str = "",
+    due_date: str = "",
+    status: str = "Pending",
+    notes: str = "",
+) -> dict[str, Any]:
+    """Insert or update a treatment plan entry for a risk."""
+    with get_db() as conn:
+        conn.execute(
+            """
+            INSERT INTO treatment_plans
+                (session_id, asset_name, threat_name, strategy, owner, due_date, status, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(session_id, asset_name, threat_name) DO UPDATE SET
+                strategy   = excluded.strategy,
+                owner      = excluded.owner,
+                due_date   = excluded.due_date,
+                status     = excluded.status,
+                notes      = excluded.notes,
+                updated_at = CURRENT_TIMESTAMP
+            """,
+            (
+                session_id, asset_name, threat_name,
+                strategy, owner or "", due_date or "", status, notes or "",
+            ),
+        )
+        row = conn.execute(
+            "SELECT * FROM treatment_plans "
+            "WHERE session_id = ? AND asset_name = ? AND threat_name = ?",
+            (session_id, asset_name, threat_name),
+        ).fetchone()
+    return row_to_dict(row)
+
+
+def get_treatment_plans(session_id: str) -> list[dict[str, Any]]:
+    """List all treatment plans for a session."""
+    with get_db() as conn:
+        rows = conn.execute(
+            "SELECT * FROM treatment_plans WHERE session_id = ? ORDER BY updated_at DESC",
+            (session_id,),
+        ).fetchall()
+    return [row_to_dict(r) for r in rows]

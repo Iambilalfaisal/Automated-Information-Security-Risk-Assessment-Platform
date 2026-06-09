@@ -28,6 +28,7 @@ from streamlit_lib.style import (  # noqa: E402
     apply_theme,
     control_cards,
     cve_alerts,
+    page_header,
     risk_table,
     section_header,
     stat_card,
@@ -39,18 +40,9 @@ apply_theme()
 session_id = get_session_id()
 
 # ── Page header ───────────────────────────────────────────────────────────────
-st.markdown(
-    """
-    <div style="animation:fadeInUp 0.5s ease both;margin-bottom:0.25rem">
-        <h1 style="font-size:1.9rem;font-weight:800;color:#f1f5f9;margin:0 0 0.2rem 0">
-            Results &amp; Reports
-        </h1>
-        <p style="color:#475569;font-size:0.88rem;margin:0">
-            Risk dashboard, compliance checklist, and downloadable PDF reports.
-        </p>
-    </div>
-    """,
-    unsafe_allow_html=True,
+page_header(
+    "Results & Reports",
+    "Risk dashboard, compliance checklist, and downloadable PDF reports.",
 )
 
 # ── Guard: no assessment yet ──────────────────────────────────────────────────

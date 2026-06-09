@@ -60,3 +60,19 @@ CREATE INDEX IF NOT EXISTS idx_assets_session ON assets(session_id);
 CREATE INDEX IF NOT EXISTS idx_threats_asset ON threats(asset_id);
 CREATE INDEX IF NOT EXISTS idx_assessments_session ON assessments(session_id);
 CREATE INDEX IF NOT EXISTS idx_compliance_session ON compliance_status(session_id);
+
+CREATE TABLE IF NOT EXISTS treatment_plans (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id TEXT NOT NULL,
+    asset_name TEXT NOT NULL,
+    threat_name TEXT NOT NULL,
+    strategy TEXT DEFAULT 'Mitigate',
+    owner TEXT DEFAULT '',
+    due_date TEXT DEFAULT '',
+    status TEXT DEFAULT 'Pending',
+    notes TEXT DEFAULT '',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(session_id, asset_name, threat_name)
+);
+CREATE INDEX IF NOT EXISTS idx_treatment_session ON treatment_plans(session_id);

@@ -274,3 +274,119 @@ def plot_compliance_gauge(score: float) -> None:
         margin=dict(t=50, b=10, l=30, r=30),
     )
     st.plotly_chart(fig, use_container_width=True)
+
+
+def plot_ale_trend(assessments: list) -> None:
+    """Line + area chart showing total ALE across assessment history (oldest → newest)."""
+    data = []
+    for a in reversed(assessments):
+        summary  = a.get("summary", {})
+        date_str = (a.get("created_at") or "")[:16]
+        ale      = summary.get("total_ale", 0)
+        if date_str:
+            data.append((date_str, ale))
+
+    if len(data) < 2:
+        st.info("Run at least 2 assessments to see an ALE trend chart.")
+        return
+
+    dates = [d[0] for d in data]
+    ales  = [d[1] for d in data]
+
+    fig = go.Figure(go.Scatter(
+        x=dates,
+        y=ales,
+        mode="lines+markers",
+        line=dict(color="#3b82f6", width=2.5),
+        marker=dict(color="#3b82f6", size=9, line=dict(color="#0f172a", width=2)),
+        fill="tozeroy",
+        fillcolor="rgba(59,130,246,0.08)",
+        hovertemplate="<b>%{x}</b><br>ALE: $%{y:,.0f}<extra></extra>",
+    ))
+    fig.update_layout(
+        title="ALE Trend — Annualised Loss Expectancy Over Time",
+        yaxis_title="Total ALE (USD)",
+        xaxis_title="Assessment Date",
+        height=300,
+        **_BASE_LAYOUT,
+    )
+    fig.update_xaxes(**_axis())
+    fig.update_yaxes(**_axis())
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def plot_cve_severity_bar(cves: list) -> None:
+    """Horizontal bar chart — CVE severity distribution."""
+    counts: dict[str, int] = {"Critical": 0, "High": 0, "Medium": 0, "Low": 0}
+    for c in cves:
+        sev = c.get("severity", "Low")
+        if sev in counts:
+            counts[sev] += 1
+
+    labels = list(counts.keys())
+    values = list(counts.values())
+    colors = [CRIT_COLORS.get(lbl, _TEXT) for lbl in labels]
+    max_v  = max(values) if any(v > 0 for v in values) else 1
+
+    fig = go.Figure(go.Bar(
+        y=labels,
+        x=values,
+        orientation="h",
+        marker=dict(color=colors, opacity=0.88, line=dict(width=0)),
+        text=[str(v) if v else "" for v in values],
+        textposition="outside",
+        textfont=dict(color=_TEXT, size=12),
+        hovertemplate="<b>%{y}</b>: %{x} CVE(s)<extra></extra>",
+    ))
+    fig.update_layout(
+        title="CVE Severity Distribution",
+        xaxis_title="Count",
+        height=220,
+        **_BASE_LAYOUT,
+    )
+    fig.update_xaxes(**_axis(range=[0, max_v * 1.45]))
+    fig.update_yaxes(**_axis())
+    st.plotly_chart(fig, use_container_width=True)
+
+
+def plot_treatment_status(plans: list) -> None:
+    """Donut chart — treatment plan status breakdown."""
+    counts: dict[str, int] = {}
+    for p in plans:
+        s = p.get("status", "Pending")
+        counts[s] = counts.get(s, 0) + 1
+
+    if not counts:
+        return
+
+    STATUS_COLORS: dict[str, str] = {
+        "Pending":     "#64748b",
+        "In Progress": "#3b82f6",
+        "Completed":   "#22c55e",
+        "Accepted":    "#a78bfa",
+    }
+    labels = list(counts.keys())
+    values = list(counts.values())
+    colors = [STATUS_COLORS.get(lbl, _TEXT) for lbl in labels]
+
+    fig = go.Figure(go.Pie(
+        labels=labels,
+        values=values,
+        hole=0.52,
+        marker=dict(colors=colors, line=dict(color="#0f172a", width=2)),
+        textfont=dict(color="#e2e8f0", size=12),
+        hovertemplate="<b>%{label}</b><br>Count: %{value}<br>%{percent}<extra></extra>",
+        rotation=90,
+    ))
+    total = sum(values)
+    fig.add_annotation(
+        text=f"<b>{total}</b><br><span style='font-size:10px'>plans</span>",
+        x=0.5, y=0.5, showarrow=False,
+        font=dict(color="#e2e8f0", size=18),
+    )
+    fig.update_layout(
+        title="Treatment Status",
+        legend=dict(font=dict(color=_TEXT), bgcolor="rgba(0,0,0,0)", orientation="h", y=-0.05),
+        **_BASE_LAYOUT,
+    )
+    st.plotly_chart(fig, use_container_width=True)

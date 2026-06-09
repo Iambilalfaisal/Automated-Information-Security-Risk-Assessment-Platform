@@ -4,6 +4,7 @@ llm_advisor.py — Claude API control recommendations with rule-based fallback.
 
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -94,9 +95,13 @@ def get_control_recommendations(
         text = message.content[0].text
         # Strip markdown code fences if present
         if "```" in text:
-            text = text.split("```")[1]
-            if text.startswith("json"):
-                text = text[4:]
+            fence_match = re.search(r"```(?:json)?\s*(\{[\s\S]*?\})\s*```", text)
+            if fence_match:
+                text = fence_match.group(1)
+            else:
+                parts = text.split("```")
+                if len(parts) >= 3:
+                    text = parts[1].lstrip("json").strip()
         parsed = json.loads(text.strip())
         parsed["source"] = "claude"
         parsed["framework"] = framework

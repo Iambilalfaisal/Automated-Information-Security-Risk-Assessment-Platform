@@ -6,6 +6,7 @@ import streamlit as st
 
 from streamlit_lib.paths import ensure_backend_path
 from streamlit_lib.style import apply_theme, page_header, section_header
+from streamlit_lib.style import apply_theme, page_header, section_header
 
 ensure_backend_path()
 
@@ -196,38 +197,67 @@ st.divider()
 # --- Lists ---
 col_assets, col_threats = st.columns(2)
 with col_assets:
-    section_header(f"Assets ({len(assets)})")
+    section_header(f"Assets ({len(assets)})", "Your organisation's inventory")
     if assets:
         for a in assets:
-            ac1, ac2 = st.columns([4, 1])
+            ac1, ac2 = st.columns([5, 1])
             with ac1:
-                st.markdown(
-                    f"**{a['name']}** — {a['asset_type']} · "
-                    f"${float(a['value_usd']):,.0f}"
+                sw_tag = (
+                    f'<span class="list-item-tag">{a["software"]}</span>'
+                    if a.get("software") else ""
                 )
-                if a.get("software"):
-                    st.caption(f"Software: {a['software']}")
+                st.markdown(
+                    f"""
+                    <div class="list-item" style="animation-delay:{assets.index(a)*0.04:.2f}s">
+                        <div class="list-item-name">{a['name']}</div>
+                        <div class="list-item-meta">
+                            {a['asset_type']} &nbsp;·&nbsp;
+                            <span style="color:#60a5fa;font-weight:600">${float(a['value_usd']):,.0f}</span>
+                            &nbsp; {sw_tag}
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
             with ac2:
-                if st.button("Delete", key=f"del_a_{a['id']}"):
+                st.markdown("<div style='margin-top:0.55rem'></div>", unsafe_allow_html=True)
+                if st.button("✕", key=f"del_a_{a['id']}", help="Delete asset"):
                     models.delete_asset(a["id"], session_id)
                     st.rerun()
     else:
-        st.caption("No assets yet.")
+        st.markdown(
+            '<div class="list-item" style="color:#1e3a5f;font-size:0.83rem">No assets yet.</div>',
+            unsafe_allow_html=True,
+        )
 
 with col_threats:
     threats = models.get_threats(session_id=session_id)
-    section_header(f"Threats ({len(threats)})")
+    section_header(f"Threats ({len(threats)})", "Mapped to assets")
     if threats:
         for t in threats:
-            tc1, tc2 = st.columns([4, 1])
+            tc1, tc2 = st.columns([5, 1])
             with tc1:
                 st.markdown(
-                    f"**{t['name']}** (asset {t['asset_id']}) · P={t['probability']} · "
-                    f"V={t['vulnerability_score']} · EF={t['exposure_factor']*100:.0f}%"
+                    f"""
+                    <div class="list-item" style="animation-delay:{threats.index(t)*0.04:.2f}s">
+                        <div class="list-item-name">{t['name']}</div>
+                        <div class="list-item-meta">
+                            Asset {t['asset_id']} &nbsp;·&nbsp;
+                            P=<span style="color:#fde68a">{t['probability']}</span> &nbsp;·&nbsp;
+                            V=<span style="color:#fdba74">{t['vulnerability_score']}</span> &nbsp;·&nbsp;
+                            EF=<span style="color:#f87171">{t['exposure_factor']*100:.0f}%</span>
+                        </div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
                 )
             with tc2:
-                if st.button("Delete", key=f"del_t_{t['id']}"):
+                st.markdown("<div style='margin-top:0.55rem'></div>", unsafe_allow_html=True)
+                if st.button("✕", key=f"del_t_{t['id']}", help="Delete threat"):
                     models.delete_threat(t["id"])
                     st.rerun()
     else:
-        st.caption("No threats yet.")
+        st.markdown(
+            '<div class="list-item" style="color:#1e3a5f;font-size:0.83rem">No threats yet.</div>',
+            unsafe_allow_html=True,
+        )

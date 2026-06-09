@@ -29,6 +29,7 @@ from streamlit_lib.style import (  # noqa: E402
     control_cards,
     cve_alerts,
     page_header,
+    page_header,
     risk_table,
     section_header,
     stat_card,

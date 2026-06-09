@@ -839,7 +839,7 @@ hr {
 
 def apply_theme() -> None:
     """Inject futuristic dark theme CSS + Google Fonts."""
-    st.markdown(_FONTS + _CSS, unsafe_allow_html=True)
+    st.html(_FONTS + _CSS)
 
 
 # ── Component helpers ──────────────────────────────────────────────────────────

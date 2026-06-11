@@ -163,13 +163,7 @@ def plot_risk_heatmap(register: list) -> None:
         texttemplate="%{text}",
         textfont=dict(color="#e2e8f0", size=11),
         colorscale=colorscale,
-        showscale=True,
-        colorbar=dict(
-            title=dict(text="Count", font=dict(color=_TEXT)),
-            tickfont=dict(color=_TEXT),
-            bgcolor=_BG,
-            bordercolor="#334155",
-        ),
+        showscale=False,
         hovertemplate="Likelihood: %{y}<br>Impact: %{x}<br>Risk count: %{z}<extra></extra>",
     ))
     fig.update_layout(

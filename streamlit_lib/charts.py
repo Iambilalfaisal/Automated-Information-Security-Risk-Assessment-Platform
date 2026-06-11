@@ -165,9 +165,8 @@ def plot_risk_heatmap(register: list) -> None:
         colorscale=colorscale,
         showscale=True,
         colorbar=dict(
-            title="Count",
+            title=dict(text="Count", font=dict(color=_TEXT)),
             tickfont=dict(color=_TEXT),
-            titlefont=dict(color=_TEXT),
             bgcolor=_BG,
             bordercolor="#334155",
         ),

@@ -14,17 +14,18 @@ import streamlit as st
 
 from streamlit_lib.paths import ensure_backend_path
 from streamlit_lib.session import get_session_id, init_session
-from streamlit_lib.style import apply_theme, page_header, section_header, stat_card
+from streamlit_lib.style import apply_theme, page_header, section_header, sidebar_status, stat_card
 
 ensure_backend_path()
 
 from database import models  # noqa: E402
-from streamlit_lib.charts import plot_treatment_status  # noqa: E402
+from streamlit_lib.charts import plot_treatment_status, plot_strategy_breakdown  # noqa: E402
 
 st.set_page_config(page_title="Treatment Plan", page_icon="🛠️", layout="wide")
 init_session()
 apply_theme()
 session_id = get_session_id()
+sidebar_status(session_id)
 
 page_header(
     "Treatment Plan",
@@ -63,37 +64,11 @@ with m4:
 # Status donut + strategy breakdown (only if plans exist)
 if plans_list:
     st.markdown("<div style='margin-top:0.5rem'></div>", unsafe_allow_html=True)
-    dc1, dc2 = st.columns([1, 2])
+    dc1, dc2 = st.columns(2)
     with dc1:
         plot_treatment_status(plans_list)
     with dc2:
-        from collections import Counter  # noqa: PLC0415
-        strategy_counts = Counter(p.get("strategy", "Mitigate") for p in plans_list)
-        strategy_colors = {
-            "Mitigate": "#3b82f6",
-            "Accept":   "#22c55e",
-            "Transfer": "#a78bfa",
-            "Avoid":    "#f87171",
-        }
-        section_header("Strategy Breakdown")
-        for strat, cnt in strategy_counts.most_common():
-            col    = strategy_colors.get(strat, "#94a3b8")
-            pct    = (cnt / len(plans_list)) * 100
-            st.markdown(
-                f"""
-                <div style="margin:0.5rem 0">
-                    <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem">
-                        <span style="color:#e2e8f0;font-size:0.85rem;font-weight:600">{strat}</span>
-                        <span style="color:#475569;font-size:0.82rem">{cnt} risk(s)</span>
-                    </div>
-                    <div style="background:#0f172a;border-radius:99px;height:6px;overflow:hidden">
-                        <div style="background:{col};width:{pct:.0f}%;height:6px;
-                                    border-radius:99px;transition:width 0.6s ease"></div>
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+        plot_strategy_breakdown(plans_list)
 
 st.divider()
 
@@ -187,3 +162,10 @@ if save_btn:
         saved += 1
     st.success(f"Saved {saved} treatment plan entries.")
     st.rerun()
+
+st.divider()
+_tc1, _tc2 = st.columns(2)
+with _tc1:
+    st.page_link("pages/2_Results.py", label="📊 Back to Results →")
+with _tc2:
+    st.page_link("pages/5_History.py", label="📈 View History →")

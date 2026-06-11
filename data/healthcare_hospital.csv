@@ -1,0 +1,19 @@
+asset_name,asset_type,value_usd,description,software,threat_name,threat_category,probability,vulnerability_score,mitigation_effectiveness,aro,exposure_factor,uncertainty,threat_level
+Patient Records Database,Data,900000,MySQL DB for HIPAA-regulated patient health records,mysql,SQL Injection Attack,Adversarial,0.55,5,0.3,1.2,0.45,0.15,5
+Patient Records Database,Data,900000,MySQL DB for HIPAA-regulated patient health records,mysql,Insider Data Exfiltration,Adversarial,0.35,4,0.4,0.6,0.4,0.2,4
+Electronic Health Records System,Software,750000,Epic EHR platform for patient charting and orders,epic,Ransomware Infection,Adversarial,0.6,5,0.25,1.5,0.55,0.15,5
+Electronic Health Records System,Software,750000,Epic EHR platform for patient charting and orders,epic,Credential Stuffing Attack,Adversarial,0.5,4,0.35,2.0,0.25,0.1,4
+Medical Imaging Server,Hardware,600000,DICOM-compliant PACS server for MRI and X-ray archives,dicom,Unauthorised Access to Imaging Data,Adversarial,0.4,4,0.4,0.8,0.35,0.15,4
+Medical Imaging Server,Hardware,600000,DICOM-compliant PACS server for MRI and X-ray archives,dicom,Hardware Failure RAID Degradation,Technical Failure,0.2,3,0.55,0.3,0.5,0.1,3
+Hospital Network Infrastructure,Hardware,350000,Core Cisco switches and VLAN segmentation for clinical networks,cisco,Network Segmentation Bypass,Adversarial,0.35,4,0.5,0.7,0.3,0.15,4
+Hospital Network Infrastructure,Hardware,350000,Core Cisco switches and VLAN segmentation for clinical networks,cisco,Man-in-the-Middle on Clinical Traffic,Adversarial,0.25,4,0.55,0.4,0.25,0.1,4
+ICU Monitoring Systems,Hardware,280000,Life-critical bedside monitors connected to hospital LAN,windows,Medical Device Firmware Exploit,Adversarial,0.3,5,0.2,0.5,0.6,0.2,5
+ICU Monitoring Systems,Hardware,280000,Life-critical bedside monitors connected to hospital LAN,windows,Alarm Fatigue via DoS on Alert System,Adversarial,0.25,4,0.3,0.4,0.5,0.2,4
+Pharmacy Management System,Software,220000,Linux-based medication dispensing and prescription management,linux,Prescription Fraud via System Manipulation,Adversarial,0.3,3,0.5,0.5,0.35,0.15,4
+Pharmacy Management System,Software,220000,Linux-based medication dispensing and prescription management,linux,Supply Chain Software Tampering,Adversarial,0.2,4,0.45,0.3,0.3,0.2,4
+Staff Workstations,Hardware,180000,200 Windows 11 workstations for clinical and admin staff,windows,Spear Phishing Clinicians,Adversarial,0.7,3,0.35,3.0,0.2,0.1,4
+Staff Workstations,Hardware,180000,200 Windows 11 workstations for clinical and admin staff,windows,Malware via USB Device,Adversarial,0.35,3,0.45,0.8,0.15,0.1,3
+Telemedicine Platform,Software,300000,Web-based video consultation platform for remote care,nginx,Session Hijacking,Adversarial,0.45,3,0.4,1.0,0.3,0.15,3
+Telemedicine Platform,Software,300000,Web-based video consultation platform for remote care,nginx,DDoS on Video Infrastructure,Adversarial,0.35,3,0.45,0.7,0.4,0.1,3
+Backup and DR Infrastructure,Hardware,150000,Tape and cloud backup systems for clinical data recovery,veritas,Backup Data Corruption,Accidental,0.2,2,0.6,0.3,0.5,0.15,2
+Backup and DR Infrastructure,Hardware,150000,Tape and cloud backup systems for clinical data recovery,veritas,Power Outage Generator Failure,Environmental,0.15,3,0.4,0.2,0.6,0.2,3

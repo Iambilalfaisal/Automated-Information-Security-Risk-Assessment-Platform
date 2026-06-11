@@ -20,6 +20,7 @@ from streamlit_lib.charts import (  # noqa: E402
     plot_compliance_gauge,
     plot_criticality_pie,
     plot_risk_heatmap,
+    plot_risk_scatter,
     plot_top_risks_bar,
 )
 from streamlit_lib.services import get_compliance_data  # noqa: E402
@@ -29,9 +30,9 @@ from streamlit_lib.style import (  # noqa: E402
     control_cards,
     cve_alerts,
     page_header,
-    page_header,
     risk_table,
     section_header,
+    sidebar_status,
     stat_card,
 )
 
@@ -39,6 +40,7 @@ st.set_page_config(page_title="Results", page_icon="📊", layout="wide")
 init_session()
 apply_theme()
 session_id = get_session_id()
+sidebar_status(session_id)
 
 # ── Page header ───────────────────────────────────────────────────────────────
 page_header(
@@ -97,8 +99,14 @@ with c1:
 with c2:
     plot_top_risks_bar(register)
 
-# ── Charts row 2: heatmap + ALE ───────────────────────────────────────────────
-plot_risk_heatmap(register)
+# ── Charts row 2: heatmap + scatter ──────────────────────────────────────────
+c3, c4 = st.columns(2)
+with c3:
+    plot_risk_heatmap(register)
+with c4:
+    plot_risk_scatter(register)
+
+# ── Chart row 3: ALE by asset ─────────────────────────────────────────────────
 plot_ale_by_asset(register)
 
 # ── Risk register ─────────────────────────────────────────────────────────────
@@ -133,6 +141,49 @@ if filter_text:
 
 filtered = sorted(filtered, key=lambda r: r.get(_SORT_KEY[sort_label], 0), reverse=True)
 risk_table(filtered)
+
+# ── Next-steps CTA banner ─────────────────────────────────────────────────────
+st.markdown(
+    """
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin:1.25rem 0 0.5rem 0">
+        <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);
+                    border-radius:12px;padding:1rem 1.25rem;animation:fadeInUp 0.4s ease both">
+            <div style="color:#60a5fa;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;
+                        text-transform:uppercase;margin-bottom:0.35rem">Next Step</div>
+            <div style="color:#e2e8f0;font-weight:600;font-size:0.9rem">Set Treatment Plans</div>
+            <div style="color:#64748b;font-size:0.8rem;margin-top:0.2rem">
+                Assign strategies, owners &amp; deadlines
+            </div>
+        </div>
+        <div style="background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.18);
+                    border-radius:12px;padding:1rem 1.25rem;animation:fadeInUp 0.4s 0.08s ease both">
+            <div style="color:#f87171;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;
+                        text-transform:uppercase;margin-bottom:0.35rem">Monitor</div>
+            <div style="color:#e2e8f0;font-weight:600;font-size:0.9rem">Threat Intelligence</div>
+            <div style="color:#64748b;font-size:0.8rem;margin-top:0.2rem">
+                Live CVE feed per asset
+            </div>
+        </div>
+        <div style="background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.18);
+                    border-radius:12px;padding:1rem 1.25rem;animation:fadeInUp 0.4s 0.16s ease both">
+            <div style="color:#4ade80;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;
+                        text-transform:uppercase;margin-bottom:0.35rem">Track</div>
+            <div style="color:#e2e8f0;font-weight:600;font-size:0.9rem">Assessment History</div>
+            <div style="color:#64748b;font-size:0.8rem;margin-top:0.2rem">
+                ALE trends across runs
+            </div>
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+_na1, _na2, _na3 = st.columns(3)
+with _na1:
+    st.page_link("pages/4_Treatment_Plan.py", label="🛠️ Treatment Plan →")
+with _na2:
+    st.page_link("pages/3_Threat_Intelligence.py", label="🔍 Threat Intelligence →")
+with _na3:
+    st.page_link("pages/5_History.py", label="📈 View History →")
 
 # ── Control recommendations ───────────────────────────────────────────────────
 recs = llm.get("recommendations", [])

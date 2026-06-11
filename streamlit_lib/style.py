@@ -837,9 +837,195 @@ hr {
 """
 
 
+_EXTRA_CSS = """
+<style>
+/* ── Page-transition fade-in for every rerun ── */
+[data-testid="stMainBlockContainer"] > div > div {
+    animation: fadeInUp 0.38s cubic-bezier(0.23,1,0.32,1) both;
+}
+
+/* ── Toast notification ── */
+.toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 9999;
+    min-width: 260px;
+    max-width: 420px;
+    background: rgba(15,23,42,0.97);
+    backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+    animation: toastSlide 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes toastSlide {
+    from { opacity:0; transform:translateX(60px) scale(0.95); }
+    to   { opacity:1; transform:translateX(0)    scale(1);    }
+}
+.toast-icon  { font-size:1.2rem; flex-shrink:0; margin-top:0.05rem; }
+.toast-title { color:#f1f5f9; font-weight:700; font-size:0.88rem; margin-bottom:0.15rem; }
+.toast-body  { color:#64748b; font-size:0.8rem; line-height:1.5; }
+.toast-success { border-left:3px solid #22c55e; }
+.toast-error   { border-left:3px solid #ef4444; }
+.toast-warning { border-left:3px solid #f59e0b; }
+.toast-info    { border-left:3px solid #3b82f6; }
+
+/* ── Sidebar status widget ── */
+.sb-widget {
+    background: rgba(15,23,42,0.7);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin: 0.5rem 0;
+}
+.sb-widget-title {
+    color: #334155;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+.sb-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.28rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.sb-row:last-child { border-bottom: none; }
+.sb-row-label { color: #475569; font-size: 0.76rem; }
+.sb-row-value { color: #60a5fa; font-size: 0.76rem; font-weight: 700; }
+.sb-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+}
+
+/* ── Animated number counter ── */
+@keyframes countUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Risk score color pill ── */
+.score-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.22rem 0.7rem;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+/* ── Animated gradient border card ── */
+.glow-card {
+    position: relative;
+    background: rgba(10,18,35,0.8);
+    border-radius: 16px;
+    padding: 1.5rem;
+    animation: fadeInUp 0.5s ease both;
+}
+.glow-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(59,130,246,0.4), rgba(139,92,246,0.2), rgba(6,182,212,0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: gradientFlow 5s ease infinite;
+}
+
+/* ── Floating stat orbs ── */
+@keyframes statPop {
+    0%   { opacity:0; transform:scale(0.5) translateY(20px); }
+    70%  { transform:scale(1.05) translateY(-4px); }
+    100% { opacity:1; transform:scale(1) translateY(0); }
+}
+
+/* ── Section divider with label ── */
+.divider-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    color: #1e3a5f;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.divider-label::before,
+.divider-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59,130,246,0.1));
+}
+.divider-label::after {
+    background: linear-gradient(90deg, rgba(59,130,246,0.1), transparent);
+}
+
+/* ── Shimmer skeleton loader ── */
+.skeleton {
+    background: linear-gradient(90deg, #1e293b 25%, #243044 50%, #1e293b 75%);
+    background-size: 200% 100%;
+    animation: shimmerLoad 1.5s ease infinite;
+    border-radius: 8px;
+}
+@keyframes shimmerLoad {
+    0%   { background-position: 200% center; }
+    100% { background-position:-200% center; }
+}
+
+/* ── Pulse ring for critical alerts ── */
+@keyframes pulseRing {
+    0%   { transform:scale(0.8); opacity:0.8; }
+    100% { transform:scale(2.0); opacity:0; }
+}
+.pulse-ring {
+    position: relative;
+    display: inline-block;
+}
+.pulse-ring::before {
+    content:'';
+    position:absolute;
+    inset:-4px;
+    border-radius:50%;
+    background:rgba(239,68,68,0.4);
+    animation:pulseRing 1.8s ease-out infinite;
+}
+
+/* ── Stagger-in animation for lists ── */
+.stagger-item:nth-child(1) { animation-delay:0.04s; }
+.stagger-item:nth-child(2) { animation-delay:0.08s; }
+.stagger-item:nth-child(3) { animation-delay:0.12s; }
+.stagger-item:nth-child(4) { animation-delay:0.16s; }
+.stagger-item:nth-child(5) { animation-delay:0.20s; }
+
+/* ── Tabbed section ── */
+.stTabs [data-baseweb="tab-panel"] {
+    animation: fadeIn 0.3s ease both !important;
+}
+</style>
+"""
+
+
 def apply_theme() -> None:
     """Inject futuristic dark theme CSS + Google Fonts."""
-    st.html(_FONTS + _CSS)
+    st.html(_FONTS + _CSS + _EXTRA_CSS)
 
 
 # ── Component helpers ──────────────────────────────────────────────────────────
@@ -1033,27 +1219,6 @@ def control_cards(recs: list[dict], source: str = "", framework: str = "") -> No
     )
 
 
-def page_header(title: str, subtitle: str = "") -> None:
-    """Futuristic animated page header with gradient underline."""
-    sub = (
-        f'<p style="color:#334155;font-size:0.86rem;margin:0.3rem 0 0;font-weight:400">'
-        f'{subtitle}</p>'
-    ) if subtitle else ""
-    st.markdown(
-        f"""
-        <div style="animation:fadeInDown 0.5s cubic-bezier(0.23,1,0.32,1) both;margin-bottom:0.5rem">
-            <h1 style="font-size:1.85rem;font-weight:800;color:#f8fafc;margin:0;
-                       letter-spacing:-0.025em;line-height:1.2">{title}</h1>
-            {sub}
-            <div style="height:2px;width:60px;margin-top:0.6rem;border-radius:99px;
-                        background:linear-gradient(90deg,#3b82f6,#8b5cf6);
-                        box-shadow:0 0 12px rgba(59,130,246,0.5)"></div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-
 def info_banner(text: str) -> None:
     """Styled info banner with blue left border."""
     st.markdown(
@@ -1062,6 +1227,85 @@ def info_banner(text: str) -> None:
                     border-radius:10px;padding:1rem 1.25rem;margin:0.75rem 0;
                     animation:fadeIn 0.4s ease both">
             <span style="color:#94a3b8;font-size:0.88rem">{text}</span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def sidebar_status(session_id: str, models_module=None) -> None:
+    """
+    Render an animated status widget in the sidebar showing session context.
+    Pass the database models module to fetch live counts.
+    """
+    from streamlit_lib.paths import ensure_backend_path
+    ensure_backend_path()
+
+    if models_module is None:
+        try:
+            from database import models as _m
+            models_module = _m
+        except Exception:
+            return
+
+    try:
+        assets     = models_module.get_assets(session_id)
+        assessment = models_module.get_latest_assessment(session_id)
+        notifs     = models_module.get_notifications(session_id, unread_only=False)
+        cve_count  = sum(1 for n in notifs if "CVE" in (n.get("message") or ""))
+        has_assess = bool(assessment and assessment.get("results"))
+        total_ale  = 0
+        if has_assess:
+            total_ale = (assessment["results"].get("summary") or {}).get("total_ale", 0)
+
+        status_dot  = "#22c55e" if has_assess else "#f59e0b"
+        status_text = "Active" if has_assess else "Pending"
+
+        with st.sidebar:
+            st.markdown(
+                f"""
+                <div class="sb-widget">
+                    <div class="sb-widget-title">Session Status</div>
+                    <div class="sb-row">
+                        <span class="sb-row-label">
+                            <span class="sb-dot" style="background:{status_dot};
+                                  box-shadow:0 0 6px {status_dot}88"></span>Assessment
+                        </span>
+                        <span class="sb-row-value" style="color:{status_dot}">{status_text}</span>
+                    </div>
+                    <div class="sb-row">
+                        <span class="sb-row-label">Assets</span>
+                        <span class="sb-row-value">{len(assets)}</span>
+                    </div>
+                    <div class="sb-row">
+                        <span class="sb-row-label">CVE Alerts</span>
+                        <span class="sb-row-value" style="color:{'#f87171' if cve_count else '#60a5fa'}">{cve_count}</span>
+                    </div>
+                    {"" if not has_assess else f'<div class="sb-row"><span class="sb-row-label">Total ALE</span><span class="sb-row-value" style="color:#f87171">${total_ale:,.0f}</span></div>'}
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+    except Exception:
+        pass
+
+
+def toast(title: str, body: str = "", kind: str = "info") -> None:
+    """
+    Animated toast notification fixed to bottom-right.
+    kind: 'success' | 'error' | 'warning' | 'info'
+    """
+    icons = {"success": "✓", "error": "✕", "warning": "⚠", "info": "ℹ"}
+    icon = icons.get(kind, "ℹ")
+    body_html = f'<div class="toast-body">{body}</div>' if body else ""
+    st.markdown(
+        f"""
+        <div class="toast toast-{kind}">
+            <div class="toast-icon">{icon}</div>
+            <div>
+                <div class="toast-title">{title}</div>
+                {body_html}
+            </div>
         </div>
         """,
         unsafe_allow_html=True,

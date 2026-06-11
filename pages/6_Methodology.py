@@ -4,12 +4,13 @@
 
 import streamlit as st
 
-from streamlit_lib.session import init_session
-from streamlit_lib.style import apply_theme, page_header, section_header
+from streamlit_lib.session import get_session_id, init_session
+from streamlit_lib.style import apply_theme, page_header, section_header, sidebar_status
 
 st.set_page_config(page_title="Methodology", page_icon="📖", layout="wide")
 init_session()
 apply_theme()
+sidebar_status(get_session_id())
 
 page_header(
     "Methodology & Framework",

@@ -1,0 +1,19 @@
+asset_name,asset_type,value_usd,description,software,threat_name,threat_category,probability,vulnerability_score,mitigation_effectiveness,aro,exposure_factor,uncertainty,threat_level
+E-commerce Web Platform,Software,600000,Nginx-fronted Magento/custom storefront serving 2M monthly visitors,nginx,Cross-Site Scripting (Stored XSS),Adversarial,0.60,4,0.35,2.0,0.20,0.10,4
+E-commerce Web Platform,Software,600000,Nginx-fronted Magento/custom storefront serving 2M monthly visitors,nginx,DDoS Attack During Peak Sale,Adversarial,0.55,3,0.40,1.5,0.40,0.10,4
+Payment Processing Gateway,Software,800000,PCI-DSS compliant payment gateway handling card transactions and tokenisation,stripe,Card Data Skimming (Magecart),Adversarial,0.50,5,0.30,1.2,0.35,0.15,5
+Payment Processing Gateway,Software,800000,PCI-DSS compliant payment gateway handling card transactions and tokenisation,stripe,API Key Theft and Fraud,Adversarial,0.40,4,0.35,0.8,0.30,0.15,5
+Customer Database,Data,400000,MySQL database storing customer profiles, order history, and loyalty programme data,mysql,Mass Data Breach via SQLi,Adversarial,0.55,5,0.30,1.0,0.45,0.15,5
+Customer Database,Data,400000,MySQL database storing customer profiles, order history, and loyalty programme data,mysql,Credential Stuffing Attack,Adversarial,0.65,3,0.35,3.0,0.15,0.10,4
+CDN and Media Storage,Software,250000,AWS S3 buckets serving product images, videos, and static assets via CloudFront CDN,aws-s3,Misconfigured Public S3 Bucket,Accidental,0.40,4,0.40,0.8,0.30,0.15,4
+CDN and Media Storage,Software,250000,AWS S3 buckets serving product images, videos, and static assets via CloudFront CDN,aws-s3,Ransomware Targeting Cloud Storage,Adversarial,0.30,3,0.45,0.5,0.35,0.15,4
+Order Management System,Software,350000,Linux-based microservices platform managing order fulfilment, shipping, and returns,linux,Container Escape in Kubernetes,Adversarial,0.25,4,0.40,0.4,0.30,0.20,4
+Order Management System,Software,350000,Linux-based microservices platform managing order fulfilment, shipping, and returns,linux,Third-Party API Dependency Compromise,Adversarial,0.30,3,0.45,0.5,0.25,0.15,3
+Inventory Management System,Software,300000,Apache-based warehouse and inventory tracking integrated with ERP,apache,Inventory Data Manipulation,Adversarial,0.30,3,0.50,0.5,0.25,0.15,3
+Inventory Management System,Software,300000,Apache-based warehouse and inventory tracking integrated with ERP,apache,Competitor Data Scraping via Automated Bots,Adversarial,0.60,2,0.40,5.0,0.10,0.10,2
+Customer Support Platform,Software,200000,Salesforce-based CRM and helpdesk used by 150 customer service agents,salesforce,Social Engineering – Impersonation of Agents,Adversarial,0.45,3,0.40,1.2,0.20,0.15,3
+Customer Support Platform,Software,200000,Salesforce-based CRM and helpdesk used by 150 customer service agents,salesforce,Phishing Targeting Support Agents,Adversarial,0.65,3,0.35,3.5,0.15,0.10,3
+Analytics and BI Platform,Software,180000,Python/Jupyter-based analytics platform for customer behaviour and sales analytics,python,Sensitive Report Leak via Misconfigured Dashboard,Accidental,0.35,3,0.50,0.7,0.25,0.15,3
+Analytics and BI Platform,Software,180000,Python/Jupyter-based analytics platform for customer behaviour and sales analytics,python,Malicious Notebook Execution by Insider,Adversarial,0.20,3,0.55,0.3,0.20,0.15,3
+Recommendation Engine,Software,220000,ML-based product recommendation service processing real-time user behaviour,python,Model Inversion Attack (Privacy Violation),Adversarial,0.15,4,0.40,0.2,0.30,0.20,3
+Recommendation Engine,Software,220000,ML-based product recommendation service processing real-time user behaviour,python,Denial of Service on Recommendation API,Adversarial,0.35,2,0.50,0.8,0.20,0.10,2

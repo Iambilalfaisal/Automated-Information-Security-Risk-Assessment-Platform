@@ -1,0 +1,19 @@
+asset_name,asset_type,value_usd,description,software,threat_name,threat_category,probability,vulnerability_score,mitigation_effectiveness,aro,exposure_factor,uncertainty,threat_level
+Core Banking System,Software,2000000,Oracle-based core banking platform processing all deposits and ledger transactions,oracle,Database Privilege Escalation,Adversarial,0.4,5,0.3,0.8,0.5,0.15,5
+Core Banking System,Software,2000000,Oracle-based core banking platform processing all deposits and ledger transactions,oracle,Zero-Day Exploit on Oracle DB,Adversarial,0.25,5,0.25,0.4,0.6,0.2,5
+Online Banking Portal,Software,500000,Apache Tomcat web application providing retail and corporate internet banking,apache,Cross-Site Scripting (XSS),Adversarial,0.55,4,0.35,1.5,0.25,0.1,4
+Online Banking Portal,Software,500000,Apache Tomcat web application providing retail and corporate internet banking,apache,Session Token Theft,Adversarial,0.45,4,0.4,1.2,0.2,0.1,4
+ATM Network,Hardware,700000,700 ATMs running Windows Embedded connected to the core banking network,windows,ATM Jackpotting (Malware),Adversarial,0.35,4,0.35,0.7,0.3,0.15,5
+ATM Network,Hardware,700000,700 ATMs running Windows Embedded connected to the core banking network,windows,Card Skimming Device Installation,Adversarial,0.4,3,0.3,1.0,0.2,0.15,4
+Customer Data Warehouse,Data,1200000,Centralised MySQL data warehouse storing KYC and transaction history,mysql,Mass Data Exfiltration,Adversarial,0.5,5,0.3,0.8,0.55,0.15,5
+Customer Data Warehouse,Data,1200000,Centralised MySQL data warehouse storing KYC and transaction history,mysql,Insider Threat - Rogue DBA,Adversarial,0.25,4,0.45,0.5,0.4,0.2,4
+SWIFT Messaging Gateway,Hardware,600000,Cisco-based SWIFT network gateway for international interbank fund transfers,cisco,SWIFT Credential Compromise,Adversarial,0.3,5,0.3,0.4,0.7,0.2,5
+SWIFT Messaging Gateway,Hardware,600000,Cisco-based SWIFT network gateway for international interbank fund transfers,cisco,Man-in-the-Middle on SWIFT Traffic,Adversarial,0.2,5,0.35,0.3,0.65,0.2,5
+Trading Platform,Software,800000,Linux-based algorithmic trading and order management system for equities,linux,Market Manipulation via API Exploit,Adversarial,0.3,4,0.4,0.5,0.45,0.15,4
+Trading Platform,Software,800000,Linux-based algorithmic trading and order management system for equities,linux,DDoS on Trading Infrastructure,Adversarial,0.4,3,0.45,0.8,0.35,0.1,4
+Fraud Detection System,Software,400000,Python-based ML fraud detection engine monitoring real-time transaction anomalies,python,Model Poisoning via Adversarial Input,Adversarial,0.2,4,0.4,0.3,0.3,0.2,4
+Fraud Detection System,Software,400000,Python-based ML fraud detection engine monitoring real-time transaction anomalies,python,Service Disruption - False Positives Flood,Accidental,0.35,2,0.55,0.7,0.2,0.15,2
+Mobile Banking App,Software,350000,iOS and Android mobile banking application served via nginx reverse proxy,nginx,API Endpoint Abuse,Adversarial,0.55,3,0.4,2.0,0.2,0.1,3
+Mobile Banking App,Software,350000,iOS and Android mobile banking application served via nginx reverse proxy,nginx,Certificate Pinning Bypass,Adversarial,0.3,4,0.45,0.6,0.25,0.15,4
+Regulatory Reporting System,Process,250000,Automated compliance and regulatory reporting workflows for Basel III and AML,linux,Report Tampering by Insider,Adversarial,0.2,3,0.55,0.3,0.3,0.2,3
+Regulatory Reporting System,Process,250000,Automated compliance and regulatory reporting workflows for Basel III and AML,linux,Data Pipeline Misconfiguration,Accidental,0.3,3,0.5,0.5,0.25,0.15,3

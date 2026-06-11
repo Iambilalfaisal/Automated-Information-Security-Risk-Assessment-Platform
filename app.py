@@ -9,7 +9,7 @@ import streamlit as st
 
 from streamlit_lib.paths import ensure_backend_path
 from streamlit_lib.session import get_session_id, init_session
-from streamlit_lib.style import apply_theme, page_header, section_header, stat_card
+from streamlit_lib.style import apply_theme, page_header, section_header, sidebar_status, stat_card
 
 st.set_page_config(
     page_title="InfoSec Risk Platform",
@@ -27,6 +27,7 @@ from streamlit_lib.charts import plot_criticality_pie, plot_top_risks_bar  # noq
 from streamlit_lib.services import get_compliance_data  # noqa: E402
 
 session_id = get_session_id()
+sidebar_status(session_id)
 assessment = models.get_latest_assessment(session_id)
 
 # ── Navigation items (icon, title, description, page path) ──────────────────
@@ -129,34 +130,65 @@ else:
     # ── Landing page for new users ─────────────────────────────────────────────
     st.markdown(
         """
-        <div class="hero-bg">
-            <div class="info-pill">NIST SP 800-30 &nbsp;·&nbsp; AssessITS &nbsp;·&nbsp; ISO 27001</div>
-            <h1 style="font-size:2.8rem;font-weight:800;color:#f1f5f9;
-                       line-height:1.15;margin:0 0 0.9rem 0">
+        <div class="hero-bg" style="padding:4rem 2rem 3rem">
+            <div class="info-pill">
+                NIST SP 800-30 &nbsp;·&nbsp; AssessITS &nbsp;·&nbsp; ISO 27001
+            </div>
+            <h1 style="font-size:3rem;font-weight:800;color:#f1f5f9;
+                       line-height:1.12;margin:0 0 1rem 0;letter-spacing:-0.03em">
                 Automated InfoSec<br>
                 <span class="grad-text">Risk Assessment Platform</span>
             </h1>
-            <p style="color:#64748b;font-size:1rem;max-width:600px;
-                      margin:0 auto;line-height:1.75">
+            <p style="color:#475569;font-size:1rem;max-width:580px;
+                      margin:0 auto 2rem;line-height:1.8">
                 Quantitative risk intelligence powered by AI — identify, score, and remediate
                 threats across your asset inventory using the AssessITS methodology.
             </p>
+            <div style="display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;
+                        margin-top:1rem">
+                <div style="text-align:center">
+                    <div style="font-size:1.8rem;font-weight:800;color:#60a5fa;
+                                font-family:'Space Grotesk',sans-serif">NIST</div>
+                    <div style="color:#334155;font-size:0.72rem;text-transform:uppercase;
+                                letter-spacing:0.1em;margin-top:0.2rem">Framework</div>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-size:1.8rem;font-weight:800;color:#a78bfa">1–250</div>
+                    <div style="color:#334155;font-size:0.72rem;text-transform:uppercase;
+                                letter-spacing:0.1em;margin-top:0.2rem">Risk Rating</div>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-size:1.8rem;font-weight:800;color:#34d399">AI</div>
+                    <div style="color:#334155;font-size:0.72rem;text-transform:uppercase;
+                                letter-spacing:0.1em;margin-top:0.2rem">Recommendations</div>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-size:1.8rem;font-weight:800;color:#fb923c">CVE</div>
+                    <div style="color:#334155;font-size:0.72rem;text-transform:uppercase;
+                                letter-spacing:0.1em;margin-top:0.2rem">Intelligence</div>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-size:1.8rem;font-weight:800;color:#f87171">PDF</div>
+                    <div style="color:#334155;font-size:0.72rem;text-transform:uppercase;
+                                letter-spacing:0.1em;margin-top:0.2rem">Reports</div>
+                </div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
     _QUICKSTART = [
-        ("📋", "1 — Assessment",       "Add assets & threats manually, load the sample dataset, or upload your own CSV.",          "pages/1_Assessment.py",  "Open Assessment →"),
-        ("⚡", "2 — Run Analysis",      "Compute SLE, ALE, and Risk Impact Rating (1–250 band) with live CVE intelligence.",        "pages/1_Assessment.py",  "Run from Assessment →"),
-        ("📊", "3 — Results & Reports", "Risk dashboard, NIST compliance checklist, AI control recommendations, and PDF reports.",  "pages/2_Results.py",     "View Results →"),
+        ("📋", "1 — Assessment",       "Load a sector-specific dataset (healthcare, banking, manufacturing, government…) or add assets manually.",  "pages/1_Assessment.py",  "Open Assessment →"),
+        ("⚡", "2 — Run Analysis",      "Compute SLE, ALE, and Risk Impact Rating (1–250 band) with live CVE intelligence and AI controls.",         "pages/1_Assessment.py",  "Run from Assessment →"),
+        ("📊", "3 — Results & Reports", "Risk dashboard, scatter map, NIST compliance checklist, AI control recommendations, and PDF reports.",      "pages/2_Results.py",     "View Results →"),
     ]
     qs_cols = st.columns(3)
-    for col, (icon, title, desc, page, link_label) in zip(qs_cols, _QUICKSTART):
+    for i, (col, (icon, title, desc, page, link_label)) in enumerate(zip(qs_cols, _QUICKSTART)):
         with col:
             st.markdown(
                 f"""
-                <div class="nav-card" style="animation-delay:0.05s">
+                <div class="nav-card" style="animation-delay:{i*0.08:.2f}s">
                     <div class="nav-card-icon">{icon}</div>
                     <div class="nav-card-title">{title}</div>
                     <div class="nav-card-desc">{desc}</div>
@@ -165,6 +197,27 @@ else:
                 unsafe_allow_html=True,
             )
             st.page_link(page, label=link_label)
+
+    st.markdown(
+        """
+        <div style="background:linear-gradient(135deg,rgba(59,130,246,0.07),rgba(139,92,246,0.05));
+                    border:1px solid rgba(59,130,246,0.18);border-radius:12px;
+                    padding:1.1rem 1.5rem;margin:0.5rem 0 1.5rem;animation:fadeInUp 0.5s ease both">
+            <div style="color:#60a5fa;font-size:0.68rem;font-weight:700;
+                        letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">
+                Quick Start Guide
+            </div>
+            <div style="color:#94a3b8;font-size:0.9rem;line-height:1.8">
+                1. Open <strong style="color:#e2e8f0">Assessment</strong>
+                &nbsp;→&nbsp; 2. Select a <strong style="color:#e2e8f0">Sample Dataset</strong>
+                &nbsp;→&nbsp; 3. Click <strong style="color:#e2e8f0">Load Dataset</strong>
+                &nbsp;→&nbsp; 4. Click <strong style="color:#e2e8f0">Run Assessment</strong>
+                &nbsp;→&nbsp; 5. Explore the <strong style="color:#e2e8f0">Executive Dashboard</strong>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.divider()
 
@@ -186,24 +239,3 @@ else:
                 """,
                 unsafe_allow_html=True,
             )
-
-    st.divider()
-    st.markdown(
-        """
-        <div style="background:#1e293b;border:1px solid #2d3f55;
-                    border-left:3px solid #3b82f6;border-radius:10px;
-                    padding:1.1rem 1.5rem">
-            <div style="color:#60a5fa;font-size:0.68rem;font-weight:700;
-                        letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">
-                Quick Start
-            </div>
-            <div style="color:#94a3b8;font-size:0.9rem;line-height:1.7">
-                Open <strong style="color:#e2e8f0">Assessment</strong> &rarr;
-                click <strong style="color:#e2e8f0">Load Dataset</strong> &rarr;
-                click <strong style="color:#e2e8f0">Run Assessment</strong> &rarr;
-                explore the full <strong style="color:#e2e8f0">Executive Dashboard</strong>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )

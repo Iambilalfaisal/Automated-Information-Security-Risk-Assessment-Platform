@@ -6,7 +6,7 @@ import streamlit as st
 
 from streamlit_lib.paths import ensure_backend_path
 from streamlit_lib.session import get_session_id, init_session
-from streamlit_lib.style import apply_theme, page_header, section_header, stat_card
+from streamlit_lib.style import apply_theme, page_header, section_header, sidebar_status, stat_card
 
 ensure_backend_path()
 
@@ -18,6 +18,7 @@ st.set_page_config(page_title="Threat Intelligence", page_icon="🔍", layout="w
 init_session()
 apply_theme()
 session_id = get_session_id()
+sidebar_status(session_id)
 
 page_header(
     "Threat Intelligence",
@@ -29,6 +30,25 @@ assets_with_sw = [a for a in assets if a.get("software")]
 notifications  = models.get_notifications(session_id, unread_only=False)
 cve_notifs     = [n for n in notifications if "CVE" in (n.get("message") or "")]
 critical_count = sum(1 for n in cve_notifs if "Critical" in (n.get("message") or ""))
+
+if not assets:
+    st.markdown(
+        """
+        <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.25);
+                    border-radius:12px;padding:1.5rem 1.75rem;text-align:center;margin:1rem 0">
+            <div style="font-size:2rem;margin-bottom:0.5rem">🔍</div>
+            <div style="color:#fde68a;font-weight:700;font-size:1rem;margin-bottom:0.4rem">
+                No assets in inventory
+            </div>
+            <div style="color:#64748b;font-size:0.88rem">
+                Load a dataset or add assets first to start monitoring CVE vulnerabilities.
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.page_link("pages/1_Assessment.py", label="📋 Go to Assessment →")
+    st.stop()
 
 m1, m2, m3, m4 = st.columns(4)
 with m1:

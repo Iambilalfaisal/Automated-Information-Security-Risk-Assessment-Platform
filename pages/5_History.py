@@ -6,7 +6,7 @@ import streamlit as st
 
 from streamlit_lib.paths import ensure_backend_path
 from streamlit_lib.session import get_session_id, init_session
-from streamlit_lib.style import apply_theme, page_header, risk_table, section_header, stat_card
+from streamlit_lib.style import apply_theme, page_header, risk_table, section_header, sidebar_status, stat_card
 
 ensure_backend_path()
 
@@ -17,6 +17,7 @@ st.set_page_config(page_title="History", page_icon="📈", layout="wide")
 init_session()
 apply_theme()
 session_id = get_session_id()
+sidebar_status(session_id)
 
 page_header(
     "Assessment History",

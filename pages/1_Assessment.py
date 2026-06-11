@@ -3,10 +3,10 @@
 """
 
 import streamlit as st
+from pathlib import Path
 
 from streamlit_lib.paths import ensure_backend_path
-from streamlit_lib.style import apply_theme, page_header, section_header
-from streamlit_lib.style import apply_theme, page_header, section_header
+from streamlit_lib.style import apply_theme, page_header, section_header, sidebar_status
 
 ensure_backend_path()
 
@@ -21,11 +21,51 @@ st.set_page_config(page_title="Assessment", page_icon="📋", layout="wide")
 init_session()
 apply_theme()
 session_id = get_session_id()
+sidebar_status(session_id)
 
 page_header(
     "Risk Assessment",
     "Add assets & threats, load sample data, then run the quantitative analysis.",
 )
+
+# ── Post-run success banner ────────────────────────────────────────────────────
+if st.session_state.get("_assessment_just_run"):
+    st.session_state._assessment_just_run = False
+    st.markdown(
+        """
+        <div style="background:linear-gradient(135deg,rgba(34,197,94,0.12),rgba(59,130,246,0.08));
+                    border:1px solid rgba(34,197,94,0.35);border-radius:14px;
+                    padding:1.2rem 1.5rem;margin-bottom:1rem;animation:fadeInUp 0.5s ease both;
+                    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+            <div>
+                <div style="color:#4ade80;font-weight:700;font-size:1rem;margin-bottom:0.2rem">
+                    ✓ Assessment Complete
+                </div>
+                <div style="color:#64748b;font-size:0.85rem">
+                    Risk register generated — view your full dashboard and reports.
+                </div>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    col_r1, col_r2 = st.columns(2)
+    with col_r1:
+        st.page_link("pages/2_Results.py", label="📊 View Results & Reports →")
+    with col_r2:
+        st.page_link("pages/4_Treatment_Plan.py", label="🛠️ Set Treatment Plans →")
+
+# ── Sample datasets picker ─────────────────────────────────────────────────────
+_DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+_SAMPLE_DATASETS = {
+    "Default — General IT Organisation":       _DATA_DIR / "assessits_sample_inventory.csv",
+    "Healthcare Hospital":                      _DATA_DIR / "healthcare_hospital.csv",
+    "Banking & FinTech":                        _DATA_DIR / "banking_fintech.csv",
+    "Manufacturing & IoT / SCADA":              _DATA_DIR / "manufacturing_iot.csv",
+    "E-Commerce & Retail":                      _DATA_DIR / "ecommerce_retail.csv",
+    "Government Agency":                        _DATA_DIR / "government_agency.csv",
+}
+_available = {k: v for k, v in _SAMPLE_DATASETS.items() if v.exists()}
 
 # Organisation, demo, dataset, and run
 col_a, col_b, col_c, col_d = st.columns([2, 1, 1, 1])
@@ -36,15 +76,19 @@ with col_a:
     )
 with col_b:
     if st.button("Load Demo Data", type="secondary", use_container_width=True):
-        result = seed_data.seed(session_id, reset=True)
+        with st.spinner("Loading demo data…"):
+            result = seed_data.seed(session_id, reset=True)
         st.success(f"Loaded {result['assets']} assets and {result['threats']} threats.")
         st.rerun()
 with col_c:
     if st.button("Load Dataset", type="secondary", use_container_width=True):
+        selected_ds = st.session_state.get("_selected_dataset", list(_available.keys())[0])
+        csv_path = _available.get(selected_ds)
         try:
-            result = dataset_loader.load_dataset(session_id, reset=True)
+            with st.spinner(f"Loading {selected_ds}…"):
+                result = dataset_loader.load_dataset(session_id, csv_path=str(csv_path), reset=True)
             st.success(
-                f"Loaded {result['assets']} assets and {result['threats']} threats from CSV dataset."
+                f"Loaded {result['assets']} assets and {result['threats']} threats from **{selected_ds}**."
             )
             st.rerun()
         except FileNotFoundError as e:
@@ -54,12 +98,40 @@ with col_c:
 with col_d:
     if st.button("Run Assessment", type="primary", use_container_width=True):
         try:
-            run_assessment(session_id, st.session_state.org_name)
-            st.success("Assessment complete! Open **Results** in the sidebar.")
+            with st.spinner("Running quantitative risk analysis…"):
+                run_assessment(session_id, st.session_state.org_name)
+            st.session_state._assessment_just_run = True
+            st.rerun()
         except ValueError as e:
             st.error(str(e))
         except Exception as e:
             st.error(f"Assessment failed: {e}")
+
+# ── Sample dataset selector ────────────────────────────────────────────────────
+if _available:
+    with st.expander("Choose a sample dataset", expanded=False):
+        st.markdown(
+            '<p style="color:#64748b;font-size:0.83rem;margin-bottom:0.6rem">'
+            'Select a sector-specific dataset then click <strong style="color:#e2e8f0">Load Dataset</strong>.'
+            '</p>',
+            unsafe_allow_html=True,
+        )
+        st.session_state._selected_dataset = st.selectbox(
+            "Sample dataset",
+            list(_available.keys()),
+            label_visibility="collapsed",
+        )
+        _chosen_path = _available[st.session_state._selected_dataset]
+        _icons = {"Healthcare": "🏥", "Banking": "🏦", "Manufacturing": "🏭",
+                  "E-Commerce": "🛒", "Government": "🏛️", "Default": "🏢"}
+        _icon = next((v for k, v in _icons.items() if k in st.session_state._selected_dataset), "📁")
+        st.markdown(
+            f'<div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);'
+            f'border-radius:8px;padding:0.65rem 1rem;margin-top:0.4rem;font-size:0.82rem;color:#94a3b8">'
+            f'{_icon} &nbsp; <strong style="color:#e2e8f0">{st.session_state._selected_dataset}</strong>'
+            f' &nbsp;·&nbsp; {_chosen_path.name}</div>',
+            unsafe_allow_html=True,
+        )
 
 # Optional CSV upload
 with st.expander("Upload custom CSV dataset"):

@@ -1,0 +1,19 @@
+asset_name,asset_type,value_usd,description,software,threat_name,threat_category,probability,vulnerability_score,mitigation_effectiveness,aro,exposure_factor,uncertainty,threat_level
+SCADA Control System,Software,1500000,Siemens WinCC SCADA platform controlling production floor automation and safety interlocks,siemens,Stuxnet-Style ICS Malware,Adversarial,0.25,5,0.25,0.3,0.75,0.20,5
+SCADA Control System,Software,1500000,Siemens WinCC SCADA platform controlling production floor automation and safety interlocks,siemens,Unauthorised Remote Access via VPN,Adversarial,0.35,4,0.35,0.6,0.55,0.15,5
+Industrial IoT Sensors,Hardware,400000,500+ embedded sensors monitoring temperature, pressure, and flow across production lines,embedded,Firmware Tampering on Sensor Nodes,Adversarial,0.30,4,0.30,0.5,0.40,0.20,4
+Industrial IoT Sensors,Hardware,400000,500+ embedded sensors monitoring temperature, pressure, and flow across production lines,embedded,Sensor Spoofing via RF Interference,Adversarial,0.25,3,0.40,0.4,0.35,0.20,3
+Production Line PLCs,Hardware,600000,Allen-Bradley PLCs controlling robotic assembly lines and conveyor systems,allen-bradley,PLC Logic Injection,Adversarial,0.20,5,0.25,0.3,0.65,0.20,5
+Production Line PLCs,Hardware,600000,Allen-Bradley PLCs controlling robotic assembly lines and conveyor systems,allen-bradley,Unplanned Shutdown via Malicious Command,Adversarial,0.25,4,0.35,0.4,0.60,0.15,4
+Manufacturing ERP,Software,500000,SAP S/4HANA ERP managing production planning, materials, and financials,sap,ERP Privilege Escalation,Adversarial,0.35,4,0.40,0.7,0.35,0.15,4
+Manufacturing ERP,Software,500000,SAP S/4HANA ERP managing production planning, materials, and financials,sap,Business Email Compromise Targeting Procurement,Adversarial,0.45,3,0.40,1.0,0.25,0.15,4
+Quality Control System,Software,250000,Windows-based statistical process control and quality inspection software,windows,Ransomware Targeting OT-Connected Systems,Adversarial,0.50,4,0.35,1.0,0.40,0.15,4
+Quality Control System,Software,250000,Windows-based statistical process control and quality inspection software,windows,Calibration Data Manipulation,Adversarial,0.20,3,0.50,0.3,0.30,0.15,3
+Supply Chain Portal,Software,300000,Apache-based supplier and logistics portal managing procurement and shipments,apache,Supply Chain Software Compromise,Adversarial,0.25,4,0.40,0.4,0.35,0.20,4
+Supply Chain Portal,Software,300000,Apache-based supplier and logistics portal managing procurement and shipments,apache,SQL Injection on Supplier Portal,Adversarial,0.45,4,0.35,0.9,0.25,0.10,4
+Engineering Workstations,Hardware,200000,80 high-spec Windows CAD/CAM workstations used by design engineers,windows,Phishing – Spear Phishing Engineers,Adversarial,0.60,3,0.35,2.5,0.20,0.10,4
+Engineering Workstations,Hardware,200000,80 high-spec Windows CAD/CAM workstations used by design engineers,windows,Intellectual Property Theft via USB,Adversarial,0.30,3,0.45,0.6,0.30,0.15,4
+Industrial Historian,Software,350000,OSIsoft PI Historian on Linux storing time-series operational data for 10 years,linux,Data Historian Manipulation,Adversarial,0.20,3,0.50,0.3,0.25,0.15,3
+Industrial Historian,Software,350000,OSIsoft PI Historian on Linux storing time-series operational data for 10 years,linux,Disk Failure – RAID Array Degradation,Technical Failure,0.15,2,0.60,0.2,0.40,0.10,2
+Building Management System,Hardware,180000,Automated building controls for HVAC, access control, and fire suppression in plant,embedded,Physical Access Bypass via BMS Exploit,Adversarial,0.25,3,0.40,0.4,0.30,0.20,3
+Building Management System,Hardware,180000,Automated building controls for HVAC, access control, and fire suppression in plant,embedded,Natural Disaster – Flash Flood in Server Room,Natural,0.10,3,0.35,0.1,0.70,0.30,3
